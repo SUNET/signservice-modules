@@ -1,0 +1,59 @@
+#
+# Configuration for a SignService running locally and supporting one client that is
+# the Signature Service Test Application (https://sig.sandbox.swedenconnect.se/testsp/login).
+#
+
+server:
+  port: 8443
+  servlet:
+    context-path: /  
+    
+signservice-config:
+  client-config-dir: classpath:clients
+      
+signservice:
+  domain: localhost
+  base-url: https://${signservice.domain}:${server.port}
+  default-sign-service-id: https://localhost.swedenconnect.se/signservice
+  common-beans:
+    cert:
+      bean-name: signservice.BuiltInCa
+      built-in-ca:
+        base-url: ${signservice.base-url}
+        ca-credential:
+          props:
+            resource: classpath:ca/test-ca.jks
+            type: JKS
+            password: secret
+            alias: test-ca
+            key-password: secret
+        ca-signing-algorithm: http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
+        ca-supported-certificate-types:
+        - PKC
+        key-provider-ref: signservice.DefaultKeyProvider
+        cert-validity: P365D
+        crl-validity: P2D
+        crl-dp-path: /sign/signca/signca.crl
+        crl-file-location: ${SIGNSERVICE_HOME}/signca/signca.crl
+        default-value-policy-checker:
+          default-reply: false
+          rules:
+          - attribute-type: rdn
+            ref: "2.5.4.6"
+            allowed-values:
+            - SE
+
+spring:
+  config:
+    import:
+    - optional:classpath:clients-localhost.yml
+    
+#
+# Logging
+#
+logging:
+  level:
+    se:
+      swedenconnect:
+        security: DEBUG
+        signservice: DEBUG

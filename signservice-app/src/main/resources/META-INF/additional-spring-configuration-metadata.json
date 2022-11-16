@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "signservice-config.client-config-dir",
+  "type": "java.lang.String",
+  "description": "Tells where to load data related to client configuration (may be certificates and such)"
+}]}

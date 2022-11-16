@@ -1,0 +1,44 @@
+#
+# Configuration for connected clients for the localhost profile
+#
+
+signservice:
+  engines:
+  - name: "localhost"
+    sign-service-id: 
+    processing-paths:
+    - /sign/testapp/signreq
+    client:
+      client-id: https://eid2cssp.3xasecurity.com/sign
+      trusted-certificates:
+      - ${signservice-config.client-config-dir}/eid2cssp.3xasecurity.com.crt
+    protocol:
+      external:
+        bean-name: signservice.DssProtocolHandler
+    authn:
+      saml:        
+        default-config-ref: authn.saml
+        entity-id: https://localhost.swedenconnect.se/eid2cssp
+        sp-paths:
+          metadata-publishing-path: /sign/testapp/saml/metadata
+          assertion-consumer-path: /sign/testapp/saml/sso
+        preferred-binding: POST
+        metadata:
+          ui-info:
+            display-names:
+            - "en-Sweden Connect Localhost Signature Service Test"
+            - "sv-Sweden Connect test för underskriftstjänster (localhost)"
+            descriptions:
+            - "en-Sweden Connect test application for signature services running on localhost"
+            - "sv-Sweden Connect testapplikation för underskriftstjänster (localhost)"
+    sign:
+      external:
+        bean-name: signservice.DefaultSignatureHandler    
+    cert:
+      external:
+        bean-name: signservice.BuiltInCa
+    audit:
+      file:
+        name: "signservice-test-localhost-audit"
+        file-name: ${SIGNSERVICE_HOME}/signservice-testapp/audit.log
+                

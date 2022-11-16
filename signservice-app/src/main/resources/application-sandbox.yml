@@ -1,0 +1,60 @@
+#
+# Configuration for SignService running on Sandbox
+#
+
+server:
+  port: 8443
+  servlet:
+    context-path: /signservice    
+
+tomcat:
+  ajp:
+    enabled: true
+    port: 8009
+    secret-required: true
+    secret: Hruje84u
+    
+signservice-config:
+  client-config-dir: file:${SIGNSERVICE_CLIENT_CONFIG_DIRECTORY}    
+    
+signservice:
+  domain: sandbox.swedenconnect.se
+  base-url: https://${signservice.domain}${server.servlet.context-path}
+  common-beans:
+    cert:
+      bean-name: signservice.RemoteCa
+      cmc:
+        key-provider-ref: signservice.DefaultKeyProvider
+        cmc-client-credential:
+          props:
+            resource: classpath:ca/cmc-client.jks
+            alias: cmc
+            password: secret
+            key-password: secret
+            type: JKS
+        cmc-request-url: https://sandbox.swedenconnect.se/sigca/cmc/ca01
+        cmc-responder-certificate: classpath:ca/cmc-responder.crt
+        ca-supported-certificate-types:
+        - PKC
+        remote-ca-info:          
+          ca-certificate-chain:
+          - classpath:ca/sandbox-ca.crt
+          - classpath:ca/sandbox-root-ca.crt
+          ca-algorithm: http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
+          crl-dp-urls:
+          - https://sandbox.swedenconnect.se/sigca/crl/ca01.crl
+          ocsp-responser-url: https://sandbox.swedenconnect.se/sigca/ocsp/ca01
+        cmc-signing-algorithm: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+        default-value-policy-checker:
+          default-reply: false
+          rules:
+          - attribute-type: rdn
+            ref: "2.5.4.6"
+            allowed-values:
+            - SE      
+                
+spring:
+  config:
+    import:
+    - ${SIGNSERVICE_CLIENT_CONFIG_DIRECTORY}/clients.yml
+    

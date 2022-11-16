@@ -1,0 +1,43 @@
+#
+# Configuration for clients for the sandbox profile
+#
+
+signservice:
+  engines:
+  - name: "signservice-test-app"
+    processing-paths:
+    - /sign/sandbox/eid2cssp
+    client:
+      client-id: https://eid2cssp.3xasecurity.com/sign
+      trusted-certificates:
+      - ${signservice-config.client-config-dir}/signservice-test-app/eid2cssp.3xasecurity.com.crt
+    protocol:
+      external:
+        bean-name: signservice.DssProtocolHandler
+    authn:
+      saml:
+        default-config-ref: authn.saml
+        entity-id: https://sandbox.swedenconnect.se/eid2cssp
+        sp-paths:
+          metadata-publishing-path: /sign/sandbox/eid2cssp/saml/metadata
+          assertion-consumer-path: /sign/sandbox/eid2cssp/saml/sso
+        metadata:
+          ui-info:
+            display-names:
+            - "en-Sweden Connect Signature Service Test"
+            - "sv-Sweden Connect testtjänst för underskriftstjänster"
+            descriptions:
+            - "en-Sweden Connect test application for signature services"
+            - "sv-Sweden Connect testapplikation för underskriftstjänster"
+    sign:
+      external:
+        bean-name: signservice.DefaultSignatureHandler
+    cert:
+      external:
+        bean-name: signservice.RemoteCa
+    audit:
+      file:
+        name: "signservice-test-app-audit"
+        file-name: ${SIGNSERVICE_HOME}/audit/signservice-test-app/audit.log
+
+
