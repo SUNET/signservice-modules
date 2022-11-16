@@ -16,6 +16,7 @@ signservice:
         bean-name: signservice.DssProtocolHandler
     authn:
       saml:
+        factory-class: se.sunet.edusign.saml.SwamidSamlAuthenticationHandlerFactory
         default-config-ref: authn.saml
         entity-id: https://sandbox.swedenconnect.se/eid2cssp
         sp-paths:
@@ -24,11 +25,11 @@ signservice:
         metadata:
           ui-info:
             display-names:
-            - "en-Sweden Connect Signature Service Test"
-            - "sv-Sweden Connect testtjänst för underskriftstjänster"
+            - "sv-SUNET Underskriftstjänst för test"
+            - "en-SUNET Test Signing Service"
             descriptions:
-            - "en-Sweden Connect test application for signature services"
-            - "sv-Sweden Connect testapplikation för underskriftstjänster"
+            - "sv-Underskriftstjänst för eduSign för test"
+            - "en-eduSign Test Signing Service"
     sign:
       external:
         bean-name: signservice.DefaultSignatureHandler

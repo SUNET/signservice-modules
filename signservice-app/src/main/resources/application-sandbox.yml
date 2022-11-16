@@ -43,7 +43,7 @@ signservice:
           ca-algorithm: http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
           crl-dp-urls:
           - https://sandbox.swedenconnect.se/sigca/crl/ca01.crl
-          ocsp-responser-url: https://sandbox.swedenconnect.se/sigca/ocsp/ca01
+          ocsp-responder-url: https://sandbox.swedenconnect.se/sigca/ocsp/ca01
         cmc-signing-algorithm: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         default-value-policy-checker:
           default-reply: false

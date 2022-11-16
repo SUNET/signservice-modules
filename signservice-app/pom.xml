@@ -3,24 +3,26 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>se.sunet.edusign</groupId>
-  <artifactId>signservice</artifactId>
+  <artifactId>edusign-signservice</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  
+  <parent>
+    <groupId>se.sunet.edusign</groupId>
+    <artifactId>edusign-signservice-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>  
 
   <name>Sunet :: eduSign :: SignService Application</name>
   <description>Sunet eduSign SignService application</description>
   <url>https://github.com/SUNET/signservice-modules</url>
 
-<!--
   <licenses>
     <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <name>The 2-Clause BSD License</name>
+      <url>https://opensource.org/licenses/BSD-2-Clause</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
--->
 
   <scm>
     <connection>scm:git:https://github.com/SUNET/signservice-modules.git</connection>
@@ -51,25 +53,9 @@
   </developers>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>11</java.version>
-
     <spring.boot.version>2.7.1</spring.boot.version>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>central</id>
-      <name>Maven Central</name>
-      <url>https://repo1.maven.org/maven2/</url>
-    </repository>
-    <repository>
-      <id>shibboleth</id>
-      <name>Shibboleth Maven Repo</name>
-      <url>https://build.shibboleth.net/nexus/content/repositories/releases</url>
-    </repository>
-  </repositories>
 
 <!--
   <distributionManagement>
@@ -92,14 +78,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring.boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>se.swedenconnect.signservice</groupId>
-        <artifactId>signservice-application-bom</artifactId>
-        <version>1.0.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -139,6 +117,12 @@
     <dependency>
       <groupId>se.swedenconnect.signservice</groupId>
       <artifactId>signservice-spring-boot-starter</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>se.sunet.edusign</groupId>
+      <artifactId>edusign-saml-plugin</artifactId>
+      <version>${project.version}</version>      
     </dependency>
 
     <dependency>
@@ -228,25 +212,6 @@
           <tag>latest</tag>
           <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>enforce</id>
-            <configuration>
-              <rules>
-                <dependencyConvergence />
-              </rules>
-            </configuration>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
     </plugins>

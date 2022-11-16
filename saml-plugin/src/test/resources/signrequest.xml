@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dss:SignRequest xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion" Profile="http://id.elegnamnden.se/csig/1.1/dss-ext/profile" RequestID="5709e52e-de94-48aa-a36f-56575f10957c">
+  <dss:OptionalInputs>
+    <csig:SignRequestExtension xmlns:csig="http://id.elegnamnden.se/csig/1.1/dss-ext/ns" xmlns:ns5="http://www.w3.org/2004/08/xop/include" xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">
+      <csig:RequestTime>2022-11-16T13:55:38.700Z</csig:RequestTime>
+      <saml2:Conditions NotBefore="2022-11-16T13:54:38.700Z" NotOnOrAfter="2022-11-16T14:00:38.700Z">
+        <saml2:AudienceRestriction>
+          <saml2:Audience>https://edusign.sunet.se/sign/callback</saml2:Audience>
+        </saml2:AudienceRestriction>
+      </saml2:Conditions>
+      <csig:Signer>
+        <saml2:Attribute Name="urn:oid:2.16.840.1.113730.3.1.241" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+          <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Martin Lindström</saml2:AttributeValue>
+        </saml2:Attribute>
+      </csig:Signer>
+      <csig:IdentityProvider Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">https://login.idp.eduid.se/idp.xml</csig:IdentityProvider>
+      <csig:SignRequester Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">https://edusign.sunet.se/shibboleth</csig:SignRequester>
+      <csig:SignService Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">https://signservice.edusign.sunet.se/sigservice</csig:SignService>
+      <csig:RequestedSignatureAlgorithm>http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256</csig:RequestedSignatureAlgorithm>
+      <csig:CertRequestProperties CertType="PKC">
+        <saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>
+        <csig:RequestedCertAttributes>
+          <csig:RequestedCertAttribute CertAttributeRef="2.5.4.5" CertNameType="rdn" FriendlyName="serialNumber" Required="true">
+            <csig:SamlAttributeName>urn:oid:1.3.6.1.4.1.5923.1.1.1.6</csig:SamlAttributeName>
+          </csig:RequestedCertAttribute>
+          <csig:RequestedCertAttribute CertAttributeRef="2.5.4.42" CertNameType="rdn" FriendlyName="givenName" Required="true">
+            <csig:SamlAttributeName>urn:oid:2.5.4.42</csig:SamlAttributeName>
+          </csig:RequestedCertAttribute>
+          <csig:RequestedCertAttribute CertAttributeRef="2.5.4.4" CertNameType="rdn" FriendlyName="SN" Required="true">
+            <csig:SamlAttributeName>urn:oid:2.5.4.4</csig:SamlAttributeName>
+          </csig:RequestedCertAttribute>
+          <csig:RequestedCertAttribute CertAttributeRef="2.5.4.3" CertNameType="rdn" FriendlyName="CN" Required="false">
+            <csig:SamlAttributeName Order="0">urn:oid:2.16.840.1.113730.3.1.241</csig:SamlAttributeName>
+            <csig:SamlAttributeName Order="1">urn:oid:2.5.4.3</csig:SamlAttributeName>
+          </csig:RequestedCertAttribute>
+          <csig:RequestedCertAttribute CertAttributeRef="2.5.4.6" CertNameType="rdn" DefaultValue="SE" FriendlyName="C" Required="false">
+            <csig:SamlAttributeName>urn:oid:2.5.4.6</csig:SamlAttributeName>
+          </csig:RequestedCertAttribute>
+          <csig:RequestedCertAttribute CertAttributeRef="1.3.6.1.4.1.5923.1.1.1.11" CertNameType="rdn" FriendlyName="eduPersonAssurance" Required="false">
+            <csig:SamlAttributeName>urn:oid:1.3.6.1.4.1.5923.1.1.1.11</csig:SamlAttributeName>
+          </csig:RequestedCertAttribute>
+        </csig:RequestedCertAttributes>
+      </csig:CertRequestProperties>
+    </csig:SignRequestExtension>
+    <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+      <ds:SignedInfo>
+        <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+        <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+        <ds:Reference URI="">
+          <ds:Transforms>
+            <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+            <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+          </ds:Transforms>
+          <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+          <ds:DigestValue>dz8bfsZOSVs2YqBFd7jzzQEn/xQLuyDraPbkeSvANII=</ds:DigestValue>
+        </ds:Reference>
+      </ds:SignedInfo>
+      <ds:SignatureValue>n/3cGySjQzsVT4CYeu/YAhEsx+nXMgSqm6dJUdVrRmf2ldSt7dq0VeybIdh4RwK8ynaz/LM2v6b65STKXFU6AuGeHQc0MGlVi+FgGeJx8lwaFXCFYxNHUIbwKz4n5d8L9nc1H4/PqyR8NZvxthDyids+NhYGIv2QzwJRLl33mMsH9QoqwSfIDuy3gwjvbgYQ7MZwaBBXVe+61GpwNr66CFU6Udz1pRku4vcrJLQGCv7X25mSHtWT9UfQJOZzjc2DKhbzhPE0SimA7LI5jD+RstlqaXrWqVV5BGEk0M7ZzDEXc6OKcWKwDYW8Uj1BqmEtyz59WD4ZdMzx+o8xoS9aJH277r1LbU6Z7hhL7Z3YpD2T31q3aBQIH0AJb2zivcef5kmdxcGjQrrRf/tTTNm9JFfP02o8qQJU9ABad7kP2a+XiOPa9RZZN0AAIdx1RjZnAS46P2MP7kkxFMuKFFVM/uHnu6Jb4U6lTpHQRwunZJgMw2EpnCXQGduwpJCvo4Ap</ds:SignatureValue>
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>MIIEAjCCAmqgAwIBAgIUN8YgaACgKdJIfG5ZniLAZK/3WwMwDQYJKoZIhvcNAQELBQAwGzEZMBcGA1UEAxMQZWR1c2lnbi5zdW5ldC5zZTAeFw0yMDA0MjkxNDEyNDNaFw0zMDA0MjcxNDEyNDNaMBsxGTAXBgNVBAMTEGVkdXNpZ24uc3VuZXQuc2UwggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQDKbiClJfmnt5Cc8OhoKZ4MzQHX7+MS1g7JtDGw1ttkWwGtbn4I80TNuiu9S3FUln3cA1/GgilzYXAPT+TOgxPXHmeC8PNnuj4yc4rJYEhR61BTpP2sEEju4DcXFGvUy8Kd89VUEJ9siIvUMdzK/jOox/p9SB7NW8nGsfZsmirWH4N2Emh/gx1co1IJQX6/ZVGRzskQvj9sVIOxCGDQKzyAHbHiD8YXxlEWbSX7+fak8+dB5AY4CzMtyySr991pQW9wDmfweOq7lWNEdLj9gfPY4c29y+77gk/RB5wpmdfcITI+pOHxwvylYhOhl02VJBFs884dRb2n4PvzeBjvdhMiolVug6S2n3iXy4wZmG6y7c86WJA7rQdBUKzTaLjcGdJ62K0+mi8Q50nkCgtnGyz6w99lOnJpU/3Vf9H96xsablpPVoh1POo1g8lgSWxf/DqNVJvVRF7EismQp/oVOLYvb3LESudb3ZXFXzjKA1YSBIVD8wfOxrvuUGxa7/qxHX8CAwEAAaM+MDwwGwYDVR0RBBQwEoIQZWR1c2lnbi5zdW5ldC5zZTAdBgNVHQ4EFgQUu3z8fJer1M/P5NuYK163YkEPysswDQYJKoZIhvcNAQELBQADggGBAHRH2ratIcyX8c2ZjL+6ChYPkmhD1wSiXOWjGOMB8SXqnZx/srsqsGnzJllyv3hv+lIyAwKdzH770w9s7CD4nKnycSpCsEUh/CwmZr20pP7oXRJuk7YlFVIx3mfQ0YERsGA8O6VrFuDOnHVsmHZUpEKSW2nVQcXjMT9EUzgChgJiR7eBnBxzMvZW44AdSSVuFeLACV7K98MztJHCyPdYdhQGMpc12rZQzZnxZXG+mRzFsn/MG2hAVqGxpMOseJu1A7tG88rDrrJ81+7gljQGiqoKo7KTfI7zVuB3ofmGAkPZhwPTCVfav+lzx2qiHWeTCJSa554MLguc10zXiwqGicZ2cWVn/ObWRtEJ3IRvnkYciEFPHSR14TXwuaCkUD34c2lutnfOYM65XfNo5jbj/4JtUHhN8ISyp/syOgE98IGafmnnEjVe5o5q3bQRB13pjWwSTeXFII8/0FkApV1IENNvNiRyiMAj9VZ4q6i3w8KKR5Zi4g5QHRTk1QFroyidLA==</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </ds:Signature>
+  </dss:OptionalInputs>
+  <dss:InputDocuments>
+    <dss:Other>
+      <csig:SignTasks xmlns:csig="http://id.elegnamnden.se/csig/1.1/dss-ext/ns" xmlns:ns5="http://www.w3.org/2004/08/xop/include" xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">
+        <csig:SignTaskData AdESType="None" SigType="PDF" SignTaskId="c9c93a3b-4d5c-4a63-9080-9cda2a3caf1a">
+          <csig:ToBeSignedBytes>MYGVMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMTExNjEzNTUzOFowKgYJKoZIhvcNAQk0MR0wGzANBglghkgBZQMEAgEFAKEKBggqhkjOPQQDAjAvBgkqhkiG9w0BCQQxIgQgnDeDqQ2H44C3WEgVxABqbYJie0Hf+ZKhulFCPPCN6jg=</csig:ToBeSignedBytes>
+        </csig:SignTaskData>
+      </csig:SignTasks>
+    </dss:Other>
+  </dss:InputDocuments>
+</dss:SignRequest>
