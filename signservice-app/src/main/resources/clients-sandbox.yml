@@ -16,7 +16,6 @@ signservice:
         bean-name: signservice.DssProtocolHandler
     authn:
       saml:
-        factory-class: se.sunet.edusign.saml.SwamidSamlAuthenticationHandlerFactory
         default-config-ref: authn.saml
         entity-id: https://sandbox.swedenconnect.se/eid2cssp
         sp-paths:

@@ -42,7 +42,7 @@ public class SignServiceApplication {
   public static class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
-    public TomcatContextCustomizer sameSiteCookiesConfig() {
+    TomcatContextCustomizer sameSiteCookiesConfig() {
       return context -> {
         final Rfc6265CookieProcessor cookieProcessor = new Rfc6265CookieProcessor();
         cookieProcessor.setSameSiteCookies(SameSiteCookies.NONE.getValue());
@@ -53,7 +53,7 @@ public class SignServiceApplication {
   }
 
   @Bean
-  public CommonsRequestLoggingFilter requestLoggingFilter() {
+  CommonsRequestLoggingFilter requestLoggingFilter() {
     final CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
     loggingFilter.setIncludeClientInfo(true);
     loggingFilter.setIncludeQueryString(true);

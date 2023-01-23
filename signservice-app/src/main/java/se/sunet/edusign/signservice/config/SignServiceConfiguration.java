@@ -13,13 +13,13 @@ import se.swedenconnect.signservice.storage.impl.InMemoryReplayCheckerStorageCon
 public class SignServiceConfiguration {
 
   @Bean
-  public InMemoryReplayCheckerStorageContainer inMemoryReplayCheckerStorageContainer() {
+  InMemoryReplayCheckerStorageContainer inMemoryReplayCheckerStorageContainer() {
     return new InMemoryReplayCheckerStorageContainer("replay-storage");
   }
 
   @Bean
   @ConfigurationProperties(prefix = "tomcat.ajp")
-  public TomcatAjpConfigurationProperties tomcatAjpConfigurationProperties() {
+  TomcatAjpConfigurationProperties tomcatAjpConfigurationProperties() {
     return new TomcatAjpConfigurationProperties();
   }
 

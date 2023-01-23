@@ -86,7 +86,7 @@ signservice:
       metadata-provider:
         bean-name: signservice.SamlMetadataProvider
         url: https://mds.swamid.se/md/swamid-idp.xml
-        backup-file: ${SIGNSERVICE_HOME}/metadata-cache/swamid-metadata.xml
+        backup-location: ${SIGNSERVICE_HOME}/metadata-cache/swamid-metadata.xml
         validation-certificate: classpath:swamid/md-signer2.crt
   default-handler-config:
     authn:
