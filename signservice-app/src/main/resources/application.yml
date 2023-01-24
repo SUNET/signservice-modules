@@ -23,7 +23,7 @@ management:
       enabled: true
       key-store: classpath:snakeoil.jks
       key-store-type: JKS
-      key-alias: localhost
+      key-alias: localdev
       key-store-password: secret
       key-password: secret
       
@@ -46,9 +46,9 @@ management:
         include: health,info,auditevents
 
 signservice:
-  domain: localhost
+  domain: local.dev.idsec.se
   base-url: https://${signservice.domain}:${server.port}
-  default-sign-service-id: https://sandbox.swedenconnect.se/signservice
+  default-sign-service-id: https://${signservice.domain}/edusign-signservice
   system-audit:
     actuator:
       name: "SignService System Audit Logger"
@@ -117,25 +117,8 @@ signservice:
         require-encrypted-assertions: false
         require-signed-assertions: true
         message-replay-checker-ref: signservice.MessageReplayChecker
-        metadata:
-          template: classpath:swamid/sp-template.xml            
-          ui-info:            
-            display-names:
-            - "sv-SUNET Underskriftstjänst"
-            - "en-SUNET Signing Service"
-            descriptions:
-            - "sv-Underskriftstjänst för eduSign"
-            - "en-eduSign Signing Service"            
-            logos:
-            - path: /images/eduSign.png
-              height: 50
-              width: 201
-            privacy-statements-urls:
-            - "sv-https://wiki.sunet.se/display/info/eduSign+Privacy+Policy?showLanguage=sv_SE"
-            - "en-https://wiki.sunet.se/display/info/eduSign+Privacy+Policy?showLanguage=en_GB"
-            information-urls:
-            - "sv-https://www.sunet.se/services/sakerhet/edusign/"
-            - "en-https://www.sunet.se/services/sakerhet/edusign/"
+#        metadata:
+#          template: classpath:swamid/sp-template.xml
 
 #
 # Logging

@@ -5,7 +5,7 @@
 server:
   port: 8443
   servlet:
-    context-path: /signservice    
+    context-path: /edusign-signservice    
 
 tomcat:
   ajp:
@@ -18,7 +18,7 @@ signservice-config:
   client-config-dir: file:${SIGNSERVICE_CLIENT_CONFIG_DIRECTORY}    
     
 signservice:
-  domain: sandbox.swedenconnect.se
+  domain: sig.idsec.se
   base-url: https://${signservice.domain}${server.servlet.context-path}
   common-beans:
     cert:
@@ -32,7 +32,7 @@ signservice:
             password: secret
             key-password: secret
             type: JKS
-        cmc-request-url: https://sandbox.swedenconnect.se/sigca/cmc/ca01
+        cmc-request-url:  https://sandbox.swedenconnect.se/sigca/cmc/educa01
         cmc-responder-certificate: classpath:ca/cmc-responder.crt
         ca-supported-certificate-types:
         - PKC
@@ -42,8 +42,8 @@ signservice:
           - classpath:ca/sandbox-root-ca.crt
           ca-algorithm: http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
           crl-dp-urls:
-          - https://sandbox.swedenconnect.se/sigca/crl/ca01.crl
-          ocsp-responder-url: https://sandbox.swedenconnect.se/sigca/ocsp/ca01
+          - https://sandbox.swedenconnect.se/sigca/crl/educa01.crl
+          ocsp-responder-url: https://sandbox.swedenconnect.se/sigca/ocsp/educa01
         cmc-signing-algorithm: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         default-value-policy-checker:
           default-reply: false
@@ -51,10 +51,53 @@ signservice:
           - attribute-type: rdn
             ref: "2.5.4.6"
             allowed-values:
-            - SE      
+            - SE
+  engines:
+  - name: "upload-and-sign-test"
+    processing-paths:
+    - /sign/uas/signrequest
+    client:
+      client-id: https://sig.idsec.se/uas-sandbox
+      trusted-certificates:
+      - ${signservice-config.client-config-dir}/uas/uas.crt
+    protocol:
+      external:
+        bean-name: signservice.DssProtocolHandler
+    authn:
+      saml:
+        default-config-ref: authn.saml
+        entity-id: https://sig.idsec.se/uas
+        sp-paths:
+          metadata-publishing-path: /sign/uas/saml/metadata
+          assertion-consumer-path: /sign/uas/saml/sso
+        metadata:
+          template: ${signservice-config.client-config-dir}/uas/idsec-sp-template.xml
+          ui-info:
+            display-names:
+            - "sv-SUNET eduSign Signeringstjänst (test och utveckling)"
+            - "en-SUNET eduSign SigningServce (test and development)"
+            descriptions:
+            - "en-SUNET eduSign SignService for development and test"
+            - "sv-SUNET eduSign Signeringstjänst för utveckling och test"
+            logos:
+            - path: /images/eduSign.png
+              height: 50
+              width: 201
+            information-urls:
+            - "en-https://idsec.se/home/edusign/utv-beskrivning-en.html"
+            - "sv-https://idsec.se/home/edusign/utv-beskrivning.html"
+            privacy-statements-urls:
+            - "en-https://idsec.se/home/edusign/dev-privacy-policy.html"
+            - "sv-https://idsec.se/home/edusign/dev-privacy-policy.html"
+    sign:
+      external:
+        bean-name: signservice.DefaultSignatureHandler
+    cert:
+      external:
+        bean-name: signservice.RemoteCa
+    audit:
+      file:
+        name: "signservice-test-app-audit"
+        file-name: ${SIGNSERVICE_HOME}/audit/uas/audit.log
                 
-spring:
-  config:
-    import:
-    - ${SIGNSERVICE_CLIENT_CONFIG_DIRECTORY}/clients.yml
     

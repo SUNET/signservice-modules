@@ -2,18 +2,6 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi"
   xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" entityID="https://signservice.edusign.sunet.se/sigservice">
   <md:Extensions>
-    <mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
-      <samla:Attribute xmlns:samla="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category"
-        NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
-        <samla:AttributeValue>
-          http://refeds.org/category/research-and-scholarship
-        </samla:AttributeValue>
-        <samla:AttributeValue>
-          http://www.geant.net/uri/dataprotection-code-of-conduct/v1
-        </samla:AttributeValue>
-        <samla:AttributeValue>https://refeds.org/category/code-of-conduct/v2</samla:AttributeValue>
-      </samla:Attribute>
-    </mdattr:EntityAttributes>
   </md:Extensions>
   <md:SPSSODescriptor WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
     <md:AttributeConsumingService index="0">

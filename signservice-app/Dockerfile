@@ -1,7 +1,7 @@
 #FROM openjdk:11-jre
 FROM openjdk:18.0.2.1-slim
 
-ADD target/signservice-sandbox-*.jar /signservice-sandbox.jar
+ADD target/edusign-signservice-*.jar /edusign-signservice.jar
 ADD scripts/start.sh /start.sh
 RUN chmod a+rx /start.sh
 

@@ -4,4 +4,4 @@
 
 export JAVA_OPTS="$JAVA_OPTS --add-opens java.base/java.lang=ALL-UNNAMED"
 
-exec java $JAVA_OPTS -jar /signservice-sandbox.jar
+exec java $JAVA_OPTS -jar /edusign-signservice.jar

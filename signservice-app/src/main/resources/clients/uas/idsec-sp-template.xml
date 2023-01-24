@@ -1,0 +1,99 @@
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+  xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi"
+  xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:remd="http://refeds.org/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+  entityID="https://replace">
+  <md:Extensions xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
+    <mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
+      <saml2:Attribute xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion"
+        Name="http://macedir.org/entity-category" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
+        <saml2:AttributeValue xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:string">
+          http://refeds.org/category/research-and-scholarship
+        </saml2:AttributeValue>
+      </saml2:Attribute>
+    </mdattr:EntityAttributes>
+  </md:Extensions>
+  <md:SPSSODescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" AuthnRequestsSigned="true" WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:Extensions>
+      <mdui:UIInfo xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+        <mdui:DisplayName xml:lang="en">SUNET eduSign SignService (local development)</mdui:DisplayName>
+        <mdui:DisplayName xml:lang="sv">SUNET eduSign Signeringstjänst (lokal utveckling)</mdui:DisplayName>
+        <mdui:Description xml:lang="en">SUNET eduSign SignService for local development and debugging</mdui:Description>
+        <mdui:Description xml:lang="sv">SUNET eduSign Signeringstjänst för lokal utveckling och felsökning</mdui:Description>
+        <mdui:Logo xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" height="50" width="165">https://sig.idsec.se/sigdemo-dev/img/eduSign_logo.svg</mdui:Logo>
+        <mdui:PrivacyStatementURL xml:lang="en">https://idsec.se/home/edusign/dev-privacy-policy.html</mdui:PrivacyStatementURL>
+        <mdui:PrivacyStatementURL xml:lang="sv">https://idsec.se/home/edusign/dev-privacy-policy.html</mdui:PrivacyStatementURL>
+        <mdui:InformationURL xml:lang="en">https://idsec.se/home/edusign/utv-beskrivning-en.html</mdui:InformationURL>
+        <mdui:InformationURL xml:lang="sv">https://idsec.se/home/edusign/utv-beskrivning.html</mdui:InformationURL>
+      </mdui:UIInfo>
+    </md:Extensions>
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:KeyName>SignService SAML Signing</ds:KeyName>
+        <ds:X509Data>
+          <ds:X509Certificate>
+            MIIFFDCCAvygAwIBAgIEYvZiGDANBgkqhkiG9w0BAQsFADBMMQswCQYDVQQGEwJTRTEXMBUGA1UECgwOU3dlZGVuIENvbm5lY3QxJDAiBgNVBAMMG1NpZ25TZXJ2aWNlIFNhbmRib3ggU0FNTCBTUDAeFw0yMjA4MTIxNDIyMTZaFw0zMjA4MTIxNDIyMTZaMEwxCzAJBgNVBAYTAlNFMRcwFQYDVQQKDA5Td2VkZW4gQ29ubmVjdDEkMCIGA1UEAwwbU2lnblNlcnZpY2UgU2FuZGJveCBTQU1MIFNQMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArV2xSl9cSZfDfFo/WjKtvlgI8wBiS30k2Ltt1gUEfJvBBiFHowECz3vAfGg3kmiAyMo2hOVM2cq7rcBCZblC4aAtPEQu/33b3cJ2OaE3Z0kfdXYNN+V5E91/PxMGuGTeA68SpoyKrAC25ebHD3wZmKS7TSD87Yo5A1EIDeHE8uhHH+L1aLzA5n4cw37xt/x2QaF5VveOMPGOQKyyz5t6nBtcvdG5bUYXF8CD389i0t+Z2Ja9LXwJP3f49fonn8lJ8b8PfDXx4YFXMYQhQx7G5kP2Smlli1pdL1+koRBFqMbWtP/7lvYwET69C58AjRsBKVe3MeWqICpYLYnTIKp/Fv81ru861rgC4PQpT1gSkSlh+zn6neSm6OwSMcTkPRAATosLIM8UN7qixeBGBfKeZ6DCzq5oKCDDYgUAM22/0EVxM9FbjJky1rjx/6nwuLdTX+z62HMM2KX9WFkD2PaTNmh8twFS6NNQRf9z3+Xiw5smQ4BFDPlhFgIE1axHC+5Gos89elolhW9xV1KsxxKn0YG7aQ2BGERm2WklcicK7QZ4fRaFqtMnoMqZTy9fo+8P6zYPC5qiD5msS8yWRsPJc8fQ/LLbfb2eTaA8VvzyoLtnvth10Tks/rop7bxB0mZdNbYGOawPdNl9LaS7v05I1Jl3RVDQ7TqoX1a16+L8KKMCAwEAATANBgkqhkiG9w0BAQsFAAOCAgEArPAtCjNTgSkLZhhJE2WGiBExjqrY0K8mLij7zMqDvPqCHhMXNORtsBds372DgtT5KwIcJWaokZ+3+D9Q3h1btw/08swHJq7oc3MsgJcvDyo9XodFBY4EQDHC7GL086bNnkz4IZ4Pa0Twx6UipdEQLwqaq0DBJmQsjflriIRcWxp/vb8Ioqt77jHU1feBSoYv4QvP2JkrymFfyrRas/JOZXrCalS8Z+ejznfRncrH8Z4EQhxAw0w+WU8yWNvpEPOiBJCbNZEXYjubN/oeJx++TmU3wkp+ZtRJoRSKaGIUt7gwWy/Ikqa3yew3UYxy2D4XGLqut6ElQbw0aChL9a5Z8+1jLY41BOK9IO/JB7NbxE1xy1910qb8JIjc2yd9DEE6+s7Or90bIxN8nNonyLXC4NPJWWHUkI49P83Og6YanEomFvG2uqxcIsDjZqXC7rzR2rriXyr75L9poEdGwVW2x/HCGgTVfQPJZOrXeq2DWndlzP2AxWkQlQGGBpwcLg5wyKDE4Cvigsd/air5hEAa2quWjbG9r23lNlQm6OLvDNHjn2FKKebHhV99yRsltyDNqJwhwNA/LjF0iFqkvG8WU8vJpm7zzqxKVWMNj2ljxgbrGEyXdEh43hgzw8/k2AOETM+Pi1H3AFoysRIJMt4poFcO5Y7qIpRvchNJ70OcaPs=
+          </ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:KeyDescriptor use="encryption">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:KeyName>SignService SAML Decryption</ds:KeyName>
+        <ds:X509Data>
+          <ds:X509Certificate>
+            MIIFFDCCAvygAwIBAgIEYvZiiTANBgkqhkiG9w0BAQsFADBMMQswCQYDVQQGEwJTRTEXMBUGA1UECgwOU3dlZGVuIENvbm5lY3QxJDAiBgNVBAMMG1NpZ25TZXJ2aWNlIFNhbmRib3ggU0FNTCBTUDAeFw0yMjA4MTIxNDI0MDlaFw0zMjA4MTIxNDI0MDlaMEwxCzAJBgNVBAYTAlNFMRcwFQYDVQQKDA5Td2VkZW4gQ29ubmVjdDEkMCIGA1UEAwwbU2lnblNlcnZpY2UgU2FuZGJveCBTQU1MIFNQMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0795QsOjO8U/8xQF/xuDPxWlqHtAyeeFUtXNfNjaZhc3B2TnhwkyQ+bCH2aq9FtWvEOLtUM8tihtok15IpPlK3FwBbTwhsOqfV+kVPfUusoEtlThI4I+aHJ9EhZFCPj/P9LbgsWicImyxvCGsnYXvIB1iskR0unTzfgCIcWMNKG06Z1c1lhrHOmmR/9/vJZ1zOHtBS0S258RNohrWsgt7QiZTxbHHQYnpCOjpQpzCbBVnQsd223u+LKT3v9smV9NtKCY4HYX2rAxkFCaCl2MUg48q+tAxwnTH1f1aAXaBqccx2APl0on7hn/G2kG7LQq73d6KN+xyFkUqgDGWOUDkiLEnKUbE4Y3lEWRrKN64vNgEH3wuKE4zg/Vl6JpFFZ2WVnyAktoz2s2FzXT1YaYv4S5epG+i0zBS4uiG0HGVDAggn8DPAMWJtJeW9WRsFAD5zK630cCMcsiJKxhdIFp5oXwg2dn0D2O+gwAYgjyJf2KZtc09Owd2KraTMSZ5FCu6FzVzp1Y9jZpAVUFNehtxGOWI7esMJqToXoMrnxk2kmBQIH30NEWgGCXAxIxTsu/Ahie+vT2mf9s/1Yr+dIN4wNEdNZvC/f0caeJrLwBqoqbnQMWjbrfdw95C8yTAaDgy17Lb2JBu0xkY43+oZh3I0YvtXY9SnzL2TeoV/mkoeECAwEAATANBgkqhkiG9w0BAQsFAAOCAgEAfpVc9xFMfkABwTvKI+FlDnjdyoX1VrhOPLaMiL4i3/agesMevRJJGq7iAXcmbuZhcaPc5SOOnKTIQT06zlo+ONhpzWlz83jGvrwLjDm9sAZvdOAJzCM3acLkkkXxvw+DtpsQmnOZAP2VDWXoAVmepqY6zxugydBE/k2M5Zgu0VPslAzidJnbIKNGAFHDTrGDpIIdwavw8ECqQuYDySeBJ/qFhZqxxLsW768TeBnCFw5en/FgpsPCAljUxzCNKCp6TZPVnu/vemfJJ+Y4j5xDjfb4Ob1lGmKjQJ3kQca32bJ7sbI8k/7mZnz8GvA0vo4+zp1so8jyiHv9BHuia9s37tMRqalJ4DOFkWtjNr8ckZoncn9PPh7G09ywqiAOrm0ArFX7CtkU2CbcqsUyS1pCriaeMDUXuNTTr5zQLhhoxb6kIjec13n9c1osuOohzqRkpZf8w+MVOnusuqDVSBV/kJYRWVkKIgVjNXCwdfVdZHQKb6drGCAAcXZM7I+Och1kbbM5LTBNX7hmwuONM6NRlR7DXy/IKHnZJiiALae4vq+KbzAYRmE07DHSOYT6Uo0PVGPfJa6xOHd3tI/CQwOp4yPkOjzLIcAB7jtHgbxvMRWWNKF91m72PrIkGaVEngvmdKbAAGEL5795YyH5xWGxAOkPxXePiOhbLdoSmiiX7bc=
+          </ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+    <md:AttributeConsumingService index="0">
+      <md:ServiceName xml:lang="en">SUNET eduSIGN Service</md:ServiceName>
+      <md:ServiceName xml:lang="sv">SUNET eduSIGN - tjänst för e-signaturer</md:ServiceName>
+      <md:RequestedAttribute FriendlyName="displayName" Name="urn:oid:2.16.840.1.113730.3.1.241"
+        NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true" />
+      <md:RequestedAttribute FriendlyName="eduPersonAssurance"
+        Name="urn:oid:1.3.6.1.4.1.5923.1.1.1.11" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+        isRequired="true" />
+      <md:RequestedAttribute FriendlyName="eduPersonPrincipalName"
+        Name="urn:oid:1.3.6.1.4.1.5923.1.1.1.6" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+        isRequired="true" />
+      <md:RequestedAttribute FriendlyName="givenName" Name="urn:oid:2.5.4.42"
+        NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true" />
+      <md:RequestedAttribute FriendlyName="mail" Name="urn:oid:0.9.2342.19200300.100.1.3"
+        NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true" />
+      <md:RequestedAttribute FriendlyName="sn" Name="urn:oid:2.5.4.4"
+        NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true" />
+    </md:AttributeConsumingService>
+  </md:SPSSODescriptor>
+  <md:Organization xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
+    <md:OrganizationName xml:lang="sv">IDsec Solutions AB</md:OrganizationName>
+    <md:OrganizationName xml:lang="en">IDsec Solutions AB</md:OrganizationName>
+    <md:OrganizationDisplayName xml:lang="sv">IDsec</md:OrganizationDisplayName>
+    <md:OrganizationDisplayName xml:lang="en">IDsec</md:OrganizationDisplayName>
+    <md:OrganizationURL xml:lang="en">https://idsec.se/home/en.html</md:OrganizationURL>
+    <md:OrganizationURL xml:lang="sv">https://idsec.se</md:OrganizationURL>
+  </md:Organization>
+  <md:ContactPerson xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" contactType="technical">
+    <md:Company>IDsec</md:Company>
+    <md:GivenName>Technical</md:GivenName>
+    <md:EmailAddress>info@idsec.se</md:EmailAddress>
+  </md:ContactPerson>
+  <md:ContactPerson xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" contactType="support">
+    <md:Company>IDsec</md:Company>
+    <md:GivenName>Support</md:GivenName>
+    <md:EmailAddress>info@idsec.se</md:EmailAddress>
+  </md:ContactPerson>
+  <md:ContactPerson xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" contactType="administrative">
+    <md:Company>IDsec</md:Company>
+    <md:GivenName>Administrative</md:GivenName>
+    <md:EmailAddress>info@idsec.se</md:EmailAddress>
+  </md:ContactPerson>
+  <md:ContactPerson xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" contactType="other" remd:contactType="http://refeds.org/metadata/contactType/security">
+    <md:Company>IDsec</md:Company>
+    <md:GivenName>Security</md:GivenName>
+    <md:EmailAddress>info@idsec.se</md:EmailAddress>
+  </md:ContactPerson>
+</md:EntityDescriptor>

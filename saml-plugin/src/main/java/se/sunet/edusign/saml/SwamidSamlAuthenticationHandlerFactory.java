@@ -16,6 +16,20 @@ public class SwamidSamlAuthenticationHandlerFactory extends SamlAuthenticationHa
   /** The SAML type for the Swamid federation. */
   public static final String SAML_TYPE_SWAMID = "swamid";
 
+
+
+  @Override
+  protected void assertSamlType(final String type) throws IllegalArgumentException {
+    if (SAML_TYPE_SWAMID.equals(type)) {
+      return;
+    }
+    else {
+      super.assertSamlType(type);
+    }
+  }
+
+
+
   /**
    * Supports the swamid SAML type.
    */
