@@ -57,7 +57,7 @@ signservice:
     processing-paths:
     - /sign/uas/signrequest
     client:
-      client-id: https://sig.idsec.se/uas-sandbox
+      client-id: https://sig.idsec.se/uas
       trusted-certificates:
       - ${signservice-config.client-config-dir}/uas/uas.crt
     protocol:
@@ -66,12 +66,12 @@ signservice:
     authn:
       saml:
         default-config-ref: authn.saml
-        entity-id: https://sig.idsec.se/uas
+        entity-id: https://sig.idsec.se/uas-sandbox
         sp-paths:
           metadata-publishing-path: /sign/uas/saml/metadata
           assertion-consumer-path: /sign/uas/saml/sso
         metadata:
-          template: ${signservice-config.client-config-dir}/uas/idsec-sp-template.xml
+          template: ${signservice-config.client-config-dir}/uas/idsec-sandbox-template.xml
           ui-info:
             display-names:
             - "sv-SUNET eduSign Signeringstjänst (test och utveckling)"

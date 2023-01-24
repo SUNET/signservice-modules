@@ -1,13 +1,12 @@
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
   xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi"
-  xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:remd="http://refeds.org/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+  xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:remd="http://refeds.org/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
   entityID="https://replace">
   <md:Extensions xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
     <mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
       <saml2:Attribute xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion"
         Name="http://macedir.org/entity-category" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
-        <saml2:AttributeValue xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:string">
+        <saml2:AttributeValue xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           http://refeds.org/category/research-and-scholarship
         </saml2:AttributeValue>
       </saml2:Attribute>
@@ -20,7 +19,8 @@
         <mdui:DisplayName xml:lang="sv">SUNET eduSign Signeringstjänst (lokal utveckling)</mdui:DisplayName>
         <mdui:Description xml:lang="en">SUNET eduSign SignService for local development and debugging</mdui:Description>
         <mdui:Description xml:lang="sv">SUNET eduSign Signeringstjänst för lokal utveckling och felsökning</mdui:Description>
-        <mdui:Logo xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" height="50" width="165">https://sig.idsec.se/sigdemo-dev/img/eduSign_logo.svg</mdui:Logo>
+        <mdui:Logo xml:lang="en" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" height="50" width="165">https://sig.idsec.se/sigdemo-dev/img/eduSign_logo.svg</mdui:Logo>
+        <mdui:Logo xml:lang="sv" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" height="50" width="165">https://sig.idsec.se/sigdemo-dev/img/eduSign_logo.svg</mdui:Logo>
         <mdui:PrivacyStatementURL xml:lang="en">https://idsec.se/home/edusign/dev-privacy-policy.html</mdui:PrivacyStatementURL>
         <mdui:PrivacyStatementURL xml:lang="sv">https://idsec.se/home/edusign/dev-privacy-policy.html</mdui:PrivacyStatementURL>
         <mdui:InformationURL xml:lang="en">https://idsec.se/home/edusign/utv-beskrivning-en.html</mdui:InformationURL>
@@ -79,21 +79,21 @@
   <md:ContactPerson xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" contactType="technical">
     <md:Company>IDsec</md:Company>
     <md:GivenName>Technical</md:GivenName>
-    <md:EmailAddress>info@idsec.se</md:EmailAddress>
+    <md:EmailAddress>mailto:info@idsec.se</md:EmailAddress>
   </md:ContactPerson>
   <md:ContactPerson xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" contactType="support">
     <md:Company>IDsec</md:Company>
     <md:GivenName>Support</md:GivenName>
-    <md:EmailAddress>info@idsec.se</md:EmailAddress>
+    <md:EmailAddress>mailto:info@idsec.se</md:EmailAddress>
   </md:ContactPerson>
   <md:ContactPerson xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" contactType="administrative">
     <md:Company>IDsec</md:Company>
     <md:GivenName>Administrative</md:GivenName>
-    <md:EmailAddress>info@idsec.se</md:EmailAddress>
+    <md:EmailAddress>mailto:info@idsec.se</md:EmailAddress>
   </md:ContactPerson>
   <md:ContactPerson xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" contactType="other" remd:contactType="http://refeds.org/metadata/contactType/security">
     <md:Company>IDsec</md:Company>
     <md:GivenName>Security</md:GivenName>
-    <md:EmailAddress>info@idsec.se</md:EmailAddress>
+    <md:EmailAddress>mailto:info@idsec.se</md:EmailAddress>
   </md:ContactPerson>
 </md:EntityDescriptor>

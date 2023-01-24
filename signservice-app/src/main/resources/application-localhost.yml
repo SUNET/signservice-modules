@@ -63,7 +63,7 @@ signservice:
           assertion-consumer-path: /sign/uas/saml/sso
         preferred-binding: POST
         metadata:
-          template: ${signservice-config.client-config-dir}/uas/idsec-sp-template.xml
+          template: ${signservice-config.client-config-dir}/uas/idsec-localdev-template.xml
     sign:
       external:
         bean-name: signservice.DefaultSignatureHandler    
