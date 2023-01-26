@@ -115,7 +115,7 @@ signservice:
             key-password: secret
         sign-authn-requests: true
         require-encrypted-assertions: false
-        require-signed-assertions: true
+        require-signed-assertions: false
         message-replay-checker-ref: signservice.MessageReplayChecker
 #        metadata:
 #          template: classpath:swamid/sp-template.xml

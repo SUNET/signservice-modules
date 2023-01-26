@@ -8,6 +8,12 @@ A packaging of a Signature Service built using DIGG's open source repository htt
 
 ## About
 
+## Testing
+
+Use https://sig2.idsec.se/sigdemo2/open/login
+
+
+
 > TODO
 
 

@@ -105,7 +105,7 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
     // Fetch the saved AuthnContext(s) read from the sign request.
     //
     final List<String> requestedContexts = Optional.ofNullable(context.get(REQUESTED_AUTHN_CONTEXT_KEY, String.class))
-        .map(s -> Arrays.asList(s.split(s, -1)))
+        .map(s -> Arrays.asList(s.split(",", -1)))
         .orElseGet(() -> Collections.emptyList());
     if (requestedContexts.isEmpty()) {
       return;

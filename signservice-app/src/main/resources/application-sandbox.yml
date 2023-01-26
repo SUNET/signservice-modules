@@ -57,7 +57,7 @@ signservice:
     processing-paths:
     - /sign/uas/signrequest
     client:
-      client-id: https://sig.idsec.se/uas
+      client-id: https://sig.idsec.se/sigserv-v2-sp
       trusted-certificates:
       - ${signservice-config.client-config-dir}/uas/uas.crt
     protocol:
