@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>edusign-harica-keycert-plugin</artifactId>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>se.sunet.edusign.harica</groupId>
+    <artifactId>edusign-harica-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <name>Sunet :: eduSign :: Harica:: KeyAndCert Plugin</name>
+  <description>Sunet eduSign SignService Harica Key and Certificate Plugin</description>
+  <url>https://github.com/SUNET/signservice-modules</url>
+
+  <licenses>
+    <license>
+      <name>The 2-Clause BSD License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:https://github.com/SUNET/signservice-modules.git</connection>
+    <developerConnection>scm:git:https://github.com/SUNET/signservice-modules.git</developerConnection>
+    <url>https://github.com/SUNET/signservice-modules/tree/master</url>
+  </scm>
+
+  <organization>
+    <name>Sunet</name>
+    <url>https://www.sunet.se</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <name>Martin Lindström</name>
+      <email>martin@idsec.se</email>
+      <organization>IDsec Solutions AB</organization>
+      <organizationUrl>https://www.idsec.se</organizationUrl>
+    </developer>
+
+    <developer>
+      <name>Stefan Santesson</name>
+      <email>stefan@idsec.se</email>
+      <organization>IDsec Solutions AB</organization>
+      <organizationUrl>https://www.idsec.se</organizationUrl>
+    </developer>
+
+  </developers>
+
+  <properties>
+  </properties>
+
+  <dependencyManagement>
+
+    <dependencies>
+
+    </dependencies>
+
+  </dependencyManagement>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>se.swedenconnect.signservice</groupId>
+      <artifactId>signservice-keycert-base</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+
+    <plugins>
+    </plugins>
+
+  </build>
+
+
+</project>

@@ -1,4 +1,4 @@
-package se.sunet.edusign.saml;
+package se.sunet.edusign.harica.authn;
 
 import se.swedenconnect.opensaml.saml2.metadata.EntityDescriptorContainer;
 import se.swedenconnect.opensaml.saml2.metadata.provider.MetadataProvider;
@@ -9,19 +9,19 @@ import se.swedenconnect.signservice.authn.saml.config.SamlAuthenticationHandlerC
 import se.swedenconnect.signservice.authn.saml.config.SamlAuthenticationHandlerFactory;
 
 /**
- * A factory for creating {@link SwamidSamlAuthenticationHandler} instances.
+ * A factory for creating {@link HaricaSamlAuthenticationHandler} instances.
  */
-public class SwamidSamlAuthenticationHandlerFactory extends SamlAuthenticationHandlerFactory {
+public class HaricaSamlAuthenticationHandlerFactory extends SamlAuthenticationHandlerFactory {
 
-  /** The SAML type for the Swamid federation. */
-  public static final String SAML_TYPE_SWAMID = "swamid";
+  /** The SAML type for the Harica federation. */
+  public static final String SAML_TYPE_HARICA = "harica";
 
   /**
-   * Supports the Swamid federation ...
+   * Supports the "harica" SAML type also.
    */
   @Override
   protected void assertSamlType(final String type) throws IllegalArgumentException {
-    if (SAML_TYPE_SWAMID.equals(type)) {
+    if (SAML_TYPE_HARICA.equals(type)) {
       return;
     }
     else {
@@ -30,7 +30,7 @@ public class SwamidSamlAuthenticationHandlerFactory extends SamlAuthenticationHa
   }
 
   /**
-   * Supports the swamid SAML type.
+   * Supports the harica SAML type.
    */
   @Override
   protected AuthenticationHandler createHandler(final SamlAuthenticationHandlerConfiguration config,
@@ -38,9 +38,9 @@ public class SwamidSamlAuthenticationHandlerFactory extends SamlAuthenticationHa
       final ResponseProcessor responseProcessor, final AuthnRequestGenerator authnRequestGenerator,
       final String preferredRequestBinding) {
 
-    if (SAML_TYPE_SWAMID.equals(config.getSamlType())) {
-      final SwamidSamlAuthenticationHandler handler =
-          new SwamidSamlAuthenticationHandler(authnRequestGenerator, responseProcessor, metadataProvider,
+    if (SAML_TYPE_HARICA.equals(config.getSamlType())) {
+      final HaricaSamlAuthenticationHandler handler =
+          new HaricaSamlAuthenticationHandler(authnRequestGenerator, responseProcessor, metadataProvider,
               entityDescriptorContainer, config.getSpPaths());
       handler.setPreferredBindingUri(preferredRequestBinding);
       return handler;
@@ -50,5 +50,7 @@ public class SwamidSamlAuthenticationHandlerFactory extends SamlAuthenticationHa
           authnRequestGenerator, preferredRequestBinding);
     }
   }
+
+  // TODO: Implement Harica specific configuration ...
 
 }

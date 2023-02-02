@@ -131,6 +131,7 @@
 
   <modules>
     <module>saml-plugin</module>
+    <module>harica</module>
     <module>signservice-app</module>
   </modules>
 

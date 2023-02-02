@@ -124,6 +124,20 @@
       <artifactId>edusign-saml-plugin</artifactId>
       <version>${project.version}</version>      
     </dependency>
+    
+    <!--
+    <dependency>
+      <groupId>se.sunet.edusign.harica</groupId>
+      <artifactId>edusign-harica-authn-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>se.sunet.edusign.harica</groupId>
+      <artifactId>edusign-harica-keycert-plugin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    -->
 
     <dependency>
       <groupId>org.webjars</groupId>
