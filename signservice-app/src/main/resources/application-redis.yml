@@ -1,0 +1,11 @@
+
+spring:
+  session:
+    store-type: redis
+    redis:
+      namespace: signservice:session
+      flush-mode: on-save
+  redis:
+    host: localhost
+    port: 6379
+    #password: secret
