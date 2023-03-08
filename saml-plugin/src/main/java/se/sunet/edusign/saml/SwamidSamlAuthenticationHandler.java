@@ -3,6 +3,7 @@ package se.sunet.edusign.saml;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,8 @@ import se.swedenconnect.signservice.authn.UserAuthenticationException;
 import se.swedenconnect.signservice.authn.saml.AbstractSamlAuthenticationHandler;
 import se.swedenconnect.signservice.authn.saml.config.SpUrlConfiguration;
 import se.swedenconnect.signservice.context.SignServiceContext;
+import se.swedenconnect.signservice.core.attribute.IdentityAttribute;
+import se.swedenconnect.signservice.core.attribute.saml.impl.StringSamlIdentityAttribute;
 import se.swedenconnect.signservice.protocol.msg.AuthnRequirements;
 import se.swedenconnect.signservice.protocol.msg.SignMessage;
 
@@ -35,6 +38,9 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
 
   /** Key for storing the requested authentication context. */
   public static final String REQUESTED_AUTHN_CONTEXT_KEY = AbstractSamlAuthenticationHandler.PREFIX + ".ReqAuthnCtx";
+
+  /** The name for the eduPersonAssurance attribute. */
+  private static final String EDU_PERSON_ASSURANCE_NAME = "urn:oid:1.3.6.1.4.1.5923.1.1.1.11";
 
   /**
    * Constructor.
@@ -49,6 +55,45 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
       final ResponseProcessor responseProcessor, final MetadataProvider metadataProvider,
       final EntityDescriptorContainer entityDescriptorContainer, final SpUrlConfiguration urlConfiguration) {
     super(authnRequestGenerator, responseProcessor, metadataProvider, entityDescriptorContainer, urlConfiguration);
+  }
+
+  /**
+   * Implements special handling of eduPersonAssurance ...
+   */
+  @Override
+  protected void assertAttributes(final AuthnRequirements authnRequirements,
+      final List<IdentityAttribute<?>> issuedAttributes,
+      final SignServiceContext context) throws UserAuthenticationException {
+
+    final IdentityAttribute<?> eduPersonAssuranceReq = authnRequirements.getRequestedSignerAttributes().stream()
+        .filter(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()))
+        .findFirst()
+        .orElse(null);
+    if (eduPersonAssuranceReq != null) {
+      final IdentityAttribute<?> eduPersonAssurance = issuedAttributes.stream()
+          .filter(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()))
+          .findFirst()
+          .orElse(null);
+      if (eduPersonAssurance != null) {
+        for (final Object value : eduPersonAssuranceReq.getValues()) {
+          if (eduPersonAssurance.getValues().stream().filter(v -> Objects.equals(v, value)).findAny().isPresent()) {
+            // Replace the multi-valued eduPersonAssurance attribute with a single-valued version containing only
+            // the value that was requested.
+            //
+            final IdentityAttribute<?> updatedEduPersonAssurance =
+                new StringSamlIdentityAttribute(EDU_PERSON_ASSURANCE_NAME, eduPersonAssurance.getFriendlyName(), (String)value); 
+            issuedAttributes.removeIf(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()));
+            issuedAttributes.add(updatedEduPersonAssurance);
+            
+            return;
+          }
+        }
+        // else, let the super implementation fail
+      }
+      // else, let the super implementation fail ...
+    }
+
+    super.assertAttributes(authnRequirements, issuedAttributes, context);
   }
 
   /**
@@ -81,7 +126,7 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
       @Override
       @Nonnull
       public String getPreferredBinding() {
-        return getPreferredBindingUri();
+        return SwamidSamlAuthenticationHandler.this.getPreferredBindingUri();
       }
 
       /**
