@@ -4,7 +4,10 @@
 
 server:
   servlet:
-    context-path: /    
+    context-path: /
+    session:
+      cookie:
+        same-site: none
   ssl:
     enabled: true
     key-store: classpath:snakeoil.jks
