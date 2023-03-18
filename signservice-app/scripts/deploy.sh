@@ -39,7 +39,8 @@ docker run -d --name edusign-signservice --restart=always \
   -e SPRING_REDIS_PORT=${REDIS_PORT} \
   -e SPRING_SESSION_STORE_TYPE=redis \
   -e SPRING_SESSION_REDIS_NAMESPACE=signservice:session \
-  -e SPRING_SESSION_REDIS_FLUSH_MODE="on-save" \
+  -e SPRING_SESSION_REDIS_FLUSH_MODE="immediate" \
+  -e SPRING_SESSION_REDIS_SAVE_MODE="on-set-attribute" \
   -e "TZ=Europe/Stockholm" \
   -v /etc/localtime:/etc/localtime:ro \
   -v /opt/docker/edusign-signservice:${SS_HOME} \
