@@ -5,8 +5,8 @@
 #
 # cfgdir: Where we place our configuration objects (certificates, keys, ...)
 #
-cfgdir: classpath:config
-#cfgdir: file:${SIGNSERVICE_HOME}/config
+#cfgdir: classpath:config
+cfgdir: file:${SIGNSERVICE_HOME}/config
 
 #
 # Server settings
