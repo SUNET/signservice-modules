@@ -9,7 +9,7 @@
   <parent>
     <groupId>se.sunet.edusign</groupId>
     <artifactId>edusign-signservice-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>  
 
   <name>Sunet :: eduSign :: SignService Application</name>
@@ -53,7 +53,7 @@
   </developers>
 
   <properties>
-    <spring.boot.version>2.7.6</spring.boot.version>
+    <spring.boot.version>2.7.10</spring.boot.version>
   </properties>
 
 
