@@ -8,4 +8,4 @@ ENV JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Dorg.apache.xml.security.ignoreL
 
 ENTRYPOINT exec java $JAVA_OPTS -jar /edusign-signservice.jar
 
-EXPOSE 8443 8009 8444
+EXPOSE 8443 8444

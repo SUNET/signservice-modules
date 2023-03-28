@@ -2,56 +2,146 @@
 # Configuration for SignService running on Sandbox
 #
 
+#
+# cfgdir: Where we place our configuration objects (certificates, keys, ...)
+#
+#cfgdir: classpath:config
+cfgdir: file:${SIGNSERVICE_HOME}/config
+
+#
+# Server settings
+#
 server:
   port: 8443
   servlet:
-    context-path: /edusign-signservice    
+    context-path: /edusign-signservice
+    session:
+      cookie:
+        same-site: none
+  ssl:
+    enabled: true
+    key-store: classpath:snakeoil.jks
+    key-store-type: JKS
+    key-alias: localhost
+    key-store-password: secret
+    key-password: secret
 
 tomcat:
   ajp:
     enabled: true
     port: 8009
     secret-required: true
-    secret: Hruje84u
     
+#
+# Redis configuration
+#   To turn on Redis set spring.session.store-type to "redis". Turn off by setting it to "none".
+#
+#   To avoid having the Redis password in the config file, set it as an
+#   environment variable and assign SPRING_REDIS_PASSWORD in the start script.
+#
+#   For more Redis settings, see https://docs.spring.io/spring-boot/docs/2.7.x/reference/htmlsingle/#appendix.application-properties.data 
+#
 spring:
   session:
     store-type: redis
     redis:
       namespace: signservice:session
       flush-mode: immediate
-      save-mode: on-set-attribute      
-  redis:
+      save-mode: on-set-attribute
+  redis:    
     #host: localhost
     port: 6379
-    #password: secret    
-    
-signservice-config:
-  client-config-dir: file:${SIGNSERVICE_CLIENT_CONFIG_DIRECTORY}    
-    
+    #password: secret
+
+#
+# The SignService configuration
+#        
 signservice:
   domain: sig.idsec.se
   base-url: https://${signservice.domain}${server.servlet.context-path}
+  default-sign-service-id: https://${signservice.domain}/edusign-signservice
+  system-audit:
+    actuator:
+      name: "SignService System Audit Logger"
+      principal: "SignService"
+      
+  #
+  # default-credential: The SignService credential (for signing responses).
+  #   May be overridden per client/engine.
+  #   Check https://github.com/swedenconnect/credentials-support for other ways of
+  #   configuring a credential (PKCS#12, private key/certificate-files etc.)
+  #
+  default-credential:
+    props:
+      name: SignService
+      resource: ${cfgdir}/signservice.jks
+      alias: signservice
+      type: JKS
+      password: secret
+      key-password: secret
+      
+  #
+  # Validation configuration
+  #   Allowed clock skew: 30 secs
+  #   Max age on received messages: 3 minutes
+  #      
+  validation-config:
+    allowed-clock-skew: PT30S
+    max-message-age: PT3M
+    
+  #
+  # For protecting against Replay attacks. Does not need to be changed.
+  # If Redis is active the bean uses Redis, otherwise it is an in-memory impl.
+  #    
+  replay-checker-storage-container-bean-name: signservice.ReplayCheckerStorageContainer
+  
+  #
+  # Commons beans - used by all engines (clients) below.
+  #
   common-beans:
+    # Protocol handler
+    protocol:
+      bean-name: signservice.DssProtocolHandler
+      dss:
+        include-assertion: true
+        include-request-message: false
+        
+    # Signature handler - supports both XML and PDF
+    sign:
+      bean-name: signservice.DefaultSignatureHandler
+      default-handler:
+        name: DefaultSignatureHandler
+        tbs-processors:
+        - type: xml
+          strict-processing: false
+          include-issuer-serial: true
+        - type: pdf
+        
+    # Key provider
+    key-provider:
+      bean-name: signservice.DefaultKeyProvider
+      security-provider: BC
+      
+    # Certificate handling (CA integration)  
     cert:
       bean-name: signservice.RemoteCa
       cmc:
         key-provider-ref: signservice.DefaultKeyProvider
         cmc-client-credential:
           props:
-            resource: classpath:ca/cmc-client.jks
+            resource: ${cfgdir}/ca/cmc-client.jks
             alias: cmc
             password: secret
             key-password: secret
             type: JKS
         cmc-request-url:  https://sandbox.swedenconnect.se/sigca/cmc/educa01
-        cmc-responder-certificate: classpath:ca/cmc-responder.crt
+        cmc-responder-certificate: ${cfgdir}/ca/cmc-responder.crt
         ca-supported-certificate-types:
         - PKC
         remote-ca-info:          
           ca-certificate-chain:
-          - classpath:ca/sandbox-ca.crt
-          - classpath:ca/sandbox-root-ca.crt
+          - ${cfgdir}/ca/sandbox-ca.crt
+          - ${cfgdir}/ca/sandbox-root-ca.crt
           ca-algorithm: http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
           crl-dp-urls:
           - https://sandbox.swedenconnect.se/sigca/crl/educa01.crl
@@ -64,26 +154,97 @@ signservice:
             ref: "2.5.4.6"
             allowed-values:
             - SE
+            
+    #
+    # SAML metadata
+    #   To use NORDUnet and MDQ use:
+    #     url: https://mds.swamid.se/md/swamid-idp.xml
+    #     mdq: true
+    #     backup-location: ${SIGNSERVICE_HOME}/metadata-cache/nordunet-metadata.xml
+    #     validation-certificate: ${cfgdir}/metadata/nordunet-signer.crt
+    #
+    saml:
+      metadata-provider:
+        bean-name: signservice.SamlMetadataProvider
+        url: https://mds.swamid.se/md/swamid-idp.xml
+        mdq: false
+        backup-location: ${SIGNSERVICE_HOME}/metadata-cache/swamid-metadata.xml
+        validation-certificate: ${cfgdir}/metadata/swamid-signer.crt
+        
+  #
+  # Default settings. All settings may be overridden by a particular engine (client)
+  #
+  default-handler-config:
+    authn:
+      saml:
+        factory-class: se.sunet.edusign.saml.SwamidSamlAuthenticationHandlerFactory
+        saml-type: swamid
+        entity-id: ${signservice.default-sign-service-id}
+        sp-paths:
+          base-url: ${signservice.base-url}
+        metadata-provider-ref: signservice.SamlMetadataProvider      
+        signature-credential:
+          props:
+            name: SignService SAML Signing
+            resource: ${cfgdir}/saml-sp.jks
+            alias: sign
+            type: JKS
+            password: secret
+            key-password: secret
+        decryption-credential:
+          props:            
+            name: SignService SAML Decryption
+            resource: ${cfgdir}/saml-sp.jks
+            alias: encrypt
+            type: JKS
+            password: secret
+            key-password: secret
+        sign-authn-requests: true
+        require-encrypted-assertions: false
+        require-signed-assertions: false
+        message-replay-checker-ref: signservice.MessageReplayChecker
+        metadata:
+          entity-categories:
+          - http://refeds.org/category/research-and-scholarship
+
+  #
+  # Client configuration - Each client has an own "engine".
+  #
   engines:
+  
+    #
+    # The Sandbox upload-and-sign application - https://sig2.idsec.se/sigdemo2/open/login 
+    #
   - name: "upload-and-sign-test"
+  
+    #
+    # The processing path(s) for this client. Note that all paths must begin with /sign
+    #
     processing-paths:
     - /sign/uas/signrequest
+    
+    #
+    # Client name and certificate(s). This is the certificate(s) used to sign SignRequest messages.
+    #    
     client:
       client-id: https://sig.idsec.se/sigserv-v2-sp
       trusted-certificates:
-      - ${signservice-config.client-config-dir}/uas/uas.crt
-    protocol:
-      external:
-        bean-name: signservice.DssProtocolHandler
+      - ${cfgdir}/clients/uas/uas.crt
+            
+    #
+    # SAML Authentication handler
+    #
     authn:
       saml:
+        # Inherit from the default SAML settings (above)
         default-config-ref: authn.saml
+        
         entity-id: https://sig.idsec.se/uas-sandbox
         sp-paths:
           metadata-publishing-path: /sign/uas/saml/metadata
           assertion-consumer-path: /sign/uas/saml/sso
         metadata:
-          template: ${signservice-config.client-config-dir}/uas/idsec-sandbox-template.xml
+          template: ${cfgdir}/clients/uas/idsec-sandbox-template.xml
           ui-info:
             display-names:
             - "sv-SUNET eduSign Signeringstjänst (test och utveckling)"
@@ -95,18 +256,18 @@ signservice:
             - path: /images/eduSign.png
               height: 50
               width: 201
+              lang: en
+            - path: /images/eduSign.png
+              height: 50
+              width: 201
+              lang: sv
             information-urls:
             - "en-https://idsec.se/home/edusign/utv-beskrivning-en.html"
             - "sv-https://idsec.se/home/edusign/utv-beskrivning.html"
             privacy-statements-urls:
             - "en-https://idsec.se/home/edusign/dev-privacy-policy.html"
             - "sv-https://idsec.se/home/edusign/dev-privacy-policy.html"
-    sign:
-      external:
-        bean-name: signservice.DefaultSignatureHandler
-    cert:
-      external:
-        bean-name: signservice.RemoteCa
+            
     audit:
       file:
         name: "signservice-test-app-audit"

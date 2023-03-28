@@ -1,6 +1,10 @@
 #
 # SignService configuration
 #
+# Base configuration to build other profiles upon
+#
+
+cfgdir: classpath:config
 
 server:
   servlet:
@@ -63,7 +67,7 @@ signservice:
   default-credential:
     props:      
       name: SignService
-      resource: classpath:signservice.jks
+      resource: ${cfgdir}/signservice.jks
       alias: signservice
       type: JKS
       password: secret
@@ -95,7 +99,7 @@ signservice:
         bean-name: signservice.SamlMetadataProvider
         url: https://mds.swamid.se/md/swamid-idp.xml
         backup-location: ${SIGNSERVICE_HOME}/metadata-cache/swamid-metadata.xml
-        validation-certificate: classpath:swamid/md-signer2.crt
+        validation-certificate: ${cfgdir}/metadata/swamid-signer.crt
   default-handler-config:
     authn:
       saml:
@@ -108,7 +112,7 @@ signservice:
         signature-credential:
           props:
             name: SignService SAML Signing
-            resource: classpath:sandbox/saml-sp.jks
+            resource: ${cfgdir}/saml-sp.jks
             alias: sign
             type: JKS
             password: secret
@@ -116,7 +120,7 @@ signservice:
         decryption-credential:
           props:            
             name: SignService SAML Decryption
-            resource: classpath:sandbox/saml-sp.jks
+            resource: ${cfgdir}/saml-sp.jks
             alias: encrypt
             type: JKS
             password: secret
@@ -125,8 +129,6 @@ signservice:
         require-encrypted-assertions: false
         require-signed-assertions: false
         message-replay-checker-ref: signservice.MessageReplayChecker
-#        metadata:
-#          template: classpath:swamid/sp-template.xml
 
 #
 # Logging
@@ -137,8 +139,26 @@ logging:
       swedenconnect:
         security: INFO
         signservice: INFO
-#  file:
-#    path: app/target/logs
 
+---
 
-#logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG
+#
+# Redis overrides
+#
+
+spring:
+  config:
+    activate:
+      on-profile: redis
+      
+  session:
+    store-type: redis
+    redis:
+      namespace: signservice:session
+      flush-mode: on-save
+  redis:
+    host: localhost
+    port: 6379
+    #password: secret
+
+      
