@@ -51,7 +51,7 @@ public class HaricaKeyAndCertificateHandlerFactory extends AbstractHandlerFactor
   }
 
   @Override protected Class<KeyAndCertificateHandler> getHandlerType() {
-    return null;
+    return KeyAndCertificateHandler.class;
   }
 
 }

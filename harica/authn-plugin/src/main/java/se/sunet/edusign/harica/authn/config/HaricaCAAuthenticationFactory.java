@@ -89,7 +89,7 @@ public class HaricaCAAuthenticationFactory extends AbstractHandlerFactory<Authen
    *
    * @return a SAML authention handler
    */
-  protected AuthenticationHandler createHandler(HaricaCAAuthenticationHandlerConfiguration conf) {
+  private HaricaCAAuthenticationHandler createHandler(HaricaCAAuthenticationHandlerConfiguration conf) {
 
     try {
       CARequestConnector caRequestConnector = new CARequestConnector(

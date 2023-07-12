@@ -17,7 +17,7 @@ import se.sunet.edusign.harica.authn.config.SpUrlConfiguration;
 @Configuration
 @Data
 @ConfigurationProperties(prefix = "harica-authn")
-public class HaricaCAAuthHandlerConfigurationProperties {
+public class HaricaAuthHandlerConfigurationProperties {
 
   /** SP url configuration */
   SpUrlConfiguration spUrl;
@@ -35,10 +35,7 @@ public class HaricaCAAuthHandlerConfigurationProperties {
   int readTimeout;
 
   /** Credentials for signing requests to the CA */
-  Resource requestSigningCredentialLocation;
-
-  /** Credential type for signing requests to the CA */
-  String requestSigningCredentialType;
+  CredentialConfiguration requestSigningCredential;
 
   /** Algorithm used to sign request to CA */
   String requestSigningAlgorithm;
@@ -88,6 +85,20 @@ public class HaricaCAAuthHandlerConfigurationProperties {
 
     /** Level of assurance assigned to assertion objects based on this authentication process (to be compared with the sign request requirements) */
     private String loa;
+
+  }
+
+  @Data
+  public static class CredentialConfiguration{
+
+    Resource location;
+
+    String alias;
+
+    String password;
+
+    String type;
+
 
   }
 

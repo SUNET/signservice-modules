@@ -45,7 +45,7 @@ public class HaricaKeyAndCertificateHandlerFactoryTest {
   void testFactory() throws Exception {
     HandlerConfiguration<KeyAndCertificateHandler> config = new HaricaKeyAndCertificateHandlerConfiguration();
     final HaricaKeyAndCertificateHandlerFactory factory = new HaricaKeyAndCertificateHandlerFactory();
-    KeyAndCertificateHandler handler = factory.createHandler(config, null);
+    KeyAndCertificateHandler handler = factory.create(config);
     Assertions.assertNotNull(handler);
   }
 
