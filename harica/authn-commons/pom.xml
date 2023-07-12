@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>edusign-harica-keycert-plugin</artifactId>
+  <artifactId>edusign-harica-authn-commons</artifactId>
   <packaging>jar</packaging>
 
   <parent>
@@ -12,8 +13,8 @@
     <version>1.1.0-SNAPSHOT</version>
   </parent>
 
-  <name>Sunet :: eduSign :: Harica:: KeyAndCert Plugin</name>
-  <description>Sunet eduSign SignService Harica Key and Certificate Plugin</description>
+  <name>Sunet :: eduSign :: Harica:: Authn Commons</name>
+  <description>Sunet eduSign SignService Harica Authentication Commons</description>
   <url>https://github.com/SUNET/signservice-modules</url>
 
   <licenses>
@@ -53,35 +54,42 @@
   </developers>
 
   <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
-  
     <dependency>
-      <groupId>se.swedenconnect.signservice</groupId>
-      <artifactId>signservice-keycert-base</artifactId>
-      <version>1.0.2</version>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.24</version>
     </dependency>
     <dependency>
-      <groupId>se.swedenconnect.signservice</groupId>
-      <artifactId>ca-auth-commons</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+      <version>1.75</version>
     </dependency>
-
     <dependency>
-      <groupId>se.idsec.utils</groupId>
-      <artifactId>print-cert</artifactId>
-      <version>1.0.5</version>
-      <scope>test</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.36</version>
     </dependency>
 
+    <!-- Test -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>      
+      <groupId>se.swedenconnect.security</groupId>
+      <artifactId>credentials-support</artifactId>
+      <version>1.2.5</version>
       <scope>test</scope>
     </dependency>
-        
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+    </dependency>
   </dependencies>
+
 
   <build>
 
@@ -92,11 +100,11 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.5.0</version>
         <configuration>
-          <doctitle>SignService KeyAndCertificate Harica - ${project.version}</doctitle>
-          <windowtitle>SignService KeyAndCertificate Harica - ${project.version}</windowtitle>
+          <doctitle>SignService CA Authentication Commons - ${project.version}</doctitle>
+          <windowtitle>SignService CA Authentication Commons - ${project.version}</windowtitle>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
