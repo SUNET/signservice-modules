@@ -60,7 +60,7 @@ import se.sunet.edusign.harica.authn.service.token.TokenCredential;
 import se.sunet.edusign.harica.authn.service.token.TokenValidator;
 
 /**
- * Base class for factories creating SAML authentication handlers.
+ * Base class for factories creating Harica CA authentication handlers.
  */
 public class HaricaCAAuthenticationFactory extends AbstractHandlerFactory<AuthenticationHandler> {
 
@@ -85,7 +85,7 @@ public class HaricaCAAuthenticationFactory extends AbstractHandlerFactory<Authen
   }
 
   /**
-   * Creates the SAML authentication handler.
+   * Creates the Harica CA authentication handler.
    *
    * @return a SAML authention handler
    */

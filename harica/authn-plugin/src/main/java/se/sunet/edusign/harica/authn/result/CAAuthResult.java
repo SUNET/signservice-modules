@@ -73,7 +73,7 @@ public class CAAuthResult implements AuthenticationResult {
     throws IOException {
 
     List<IdentityAttribute<?>> assertionAttributes = new ArrayList<>();
-    List<SubjectAttributeInfo> attributeInfoList = getAttributeInfoList(certificate.getIssuerX500Principal());
+    List<SubjectAttributeInfo> attributeInfoList = getAttributeInfoList(certificate.getSubjectX500Principal());
 
     addAttribute(BCStyle.SERIALNUMBER, uidAttribute,
       "personIdentifier" ,attributeInfoList, assertionAttributes);

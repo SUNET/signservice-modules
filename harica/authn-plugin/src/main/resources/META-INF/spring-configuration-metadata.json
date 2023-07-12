@@ -3,7 +3,7 @@
     {
       "name": "",
       "type": "se.sunet.edusign.harica.authn.config.HaricaCAAuthenticationHandlerConfiguration",
-      "description": "SAML Authentication Handler Configuration.",
+      "description": "Harica CA Authentication Handler Configuration.",
       "sourceType": "se.sunet.edusign.harica.authn.config.HaricaCAAuthenticationHandlerConfiguration"
     }
   ],
