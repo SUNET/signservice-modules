@@ -150,7 +150,7 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
 
       // Register certificate request at CA
       CaCertificateRequest caCertificateRequest = new CaCertificateRequest(context.getId(), userDetails.getUniqueIdentifier(), csr,
-        urlConfiguration.getCertificateReturnPath());
+        urlConfiguration.getBaseUrl() + urlConfiguration.getCertificateReturnPath());
       CertificateRequestResult requestResult = certificateRequestService.registerCertificateRequest(
         caCertificateRequest);
       // Get result
@@ -221,7 +221,7 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
     SerializableCredentials serializableCredentials = context.get(SIGNER_CREDENTIAL_KEY);
 
     try {
-      final String certResponseJwt = httpRequest.getParameter("JWT");
+      final String certResponseJwt = httpRequest.getParameter("JWS");
       SignedJWT signedJWT = tokenValidator.validateToken(certResponseJwt);
       CaCertificateResponse caCertificateResponse = responseParser.parseTokenPayload(signedJWT.getPayload());
       if (caCertificateResponse.getCertificate() == null) {

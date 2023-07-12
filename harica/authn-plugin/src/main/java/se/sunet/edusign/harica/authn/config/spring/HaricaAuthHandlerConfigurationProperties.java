@@ -37,11 +37,11 @@ public class HaricaAuthHandlerConfigurationProperties {
   /** Credentials for signing requests to the CA */
   CredentialConfiguration requestSigningCredential;
 
-  /** Algorithm used to sign request to CA */
+  /** JWSAlgorithm name used to sign request to CA */
   String requestSigningAlgorithm;
 
   /** Trusted certificate for validating certificate result tokens from CA */
-  Resource trustedCaTokenSignerCert;
+  Resource trustedCaTokenVerificationKey;
 
   /** The name of the attribute specified in sign request as the ID of attributes used to provide the e-mail of the signer */
   String emailAdressSource;
@@ -91,15 +91,9 @@ public class HaricaAuthHandlerConfigurationProperties {
   @Data
   public static class CredentialConfiguration{
 
-    Resource location;
+    Resource ecPrivateKey;
 
-    String alias;
-
-    String password;
-
-    String type;
-
-
+    String ecPublicKey;
   }
 
 }

@@ -15,6 +15,8 @@
  */
 package se.sunet.edusign.harica.authn.config;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.Objects;
 
@@ -24,7 +26,6 @@ import javax.annotation.Nullable;
 import com.nimbusds.jose.JWSAlgorithm;
 
 import lombok.Getter;
-import se.swedenconnect.security.credential.PkiCredential;
 import se.swedenconnect.signservice.authn.AuthenticationHandler;
 import se.swedenconnect.signservice.core.config.AbstractHandlerConfiguration;
 
@@ -48,7 +49,7 @@ public class HaricaCAAuthenticationHandlerConfiguration
 
   /** Credentials for signing requests to the CA */
   @Getter
-  PkiCredential requestSigningCredential;
+  PrivateKey requestSigningCredential;
 
   /** Algorithm used to sign request to CA */
   @Getter
@@ -56,7 +57,7 @@ public class HaricaCAAuthenticationHandlerConfiguration
 
   /** Trusted certificate for validating certificate result tokens from CA */
   @Getter
-  X509Certificate trustedCaTokenSignerCert;
+  PublicKey trustedCaTokenVerificationKey;
 
   /** URL configuration settings for this SP specifying URL end points provided by this service to communicate with the CA */
   @Getter
@@ -102,7 +103,7 @@ public class HaricaCAAuthenticationHandlerConfiguration
     this.httpProxyConfiguration = httpProxyConfiguration;
   }
 
-  public void setRequestSigningCredential(@Nonnull final PkiCredential requestSigningCredential) {
+  public void setRequestSigningCredential(@Nonnull final PrivateKey requestSigningCredential) {
     this.requestSigningCredential = Objects.requireNonNull(requestSigningCredential,
       "requestSigningCredential must not be null");
   }
@@ -112,8 +113,8 @@ public class HaricaCAAuthenticationHandlerConfiguration
       "requestSigningAlgorithm must not be null");
   }
 
-  public void setTrustedCaTokenSignerCert(@Nonnull final X509Certificate trustedCaTokenSignerCert) {
-    this.trustedCaTokenSignerCert = Objects.requireNonNull(trustedCaTokenSignerCert,
+  public void setTrustedCaTokenVerificationKey(@Nonnull final PublicKey trustedCaTokenVerificationKey) {
+    this.trustedCaTokenVerificationKey = Objects.requireNonNull(trustedCaTokenVerificationKey,
       "trustedCaTokenSignerCert must not be null");
   }
 

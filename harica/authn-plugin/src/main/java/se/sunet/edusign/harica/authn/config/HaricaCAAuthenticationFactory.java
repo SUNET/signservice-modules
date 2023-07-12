@@ -97,13 +97,13 @@ public class HaricaCAAuthenticationFactory extends AbstractHandlerFactory<Authen
 
       boolean ecSigner = conf.getRequestSigningAlgorithm().getName().startsWith("ES");
       JWSSigner signer = ecSigner
-        ? new ECDSASigner((ECPrivateKey) conf.getRequestSigningCredential().getPrivateKey())
-        : new RSASSASigner(conf.getRequestSigningCredential().getPrivateKey());
+        ? new ECDSASigner((ECPrivateKey) conf.getRequestSigningCredential())
+        : new RSASSASigner(conf.getRequestSigningCredential());
 
       BackChannelRequestSigner backChannelRequestSigner = new BackChannelRequestSigner(signer,
         conf.requestSigningAlgorithm);
 
-      TokenCredential trustedCredential = new TokenCredential(conf.getTrustedCaTokenSignerCert());
+      TokenCredential trustedCredential = new TokenCredential(conf.getTrustedCaTokenVerificationKey());
 
       X509CertificateHolder caCertHolder = new JcaX509CertificateHolder(conf.getCaConfiguration().getCaCertificateChain().get(0));
 
