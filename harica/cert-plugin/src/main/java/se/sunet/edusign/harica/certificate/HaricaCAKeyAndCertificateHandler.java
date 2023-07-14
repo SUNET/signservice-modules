@@ -13,8 +13,8 @@ import se.swedenconnect.signservice.certificate.KeyAndCertificateHandler;
 import se.swedenconnect.signservice.context.SignServiceContext;
 import se.swedenconnect.signservice.core.AbstractSignServiceHandler;
 import se.swedenconnect.signservice.core.types.InvalidRequestException;
-import se.swedenconnect.signservice.harica.commons.SerializableCredentials;
 import se.swedenconnect.signservice.protocol.SignRequestMessage;
+import se.sunet.edusign.harica.commons.SerializableCredentials;
 
 /**
  * Provide the sign service credentials based on completed authentication and certificate issuance using the
@@ -37,11 +37,7 @@ public class HaricaCAKeyAndCertificateHandler extends AbstractSignServiceHandler
 
   @Override public void checkRequirements(@Nonnull SignRequestMessage signRequestMessage,
     @Nonnull SignServiceContext context) throws InvalidRequestException {
-
-    SerializableCredentials serializableCredentials = context.get(SIGNER_CREDENTIAL_KEY);
-    if (serializableCredentials == null) {
-      throw new InvalidRequestException("No signer key is available");
-    }
+    // No checks to be made
   }
 
   @Nonnull @Override public PkiCredential generateSigningCredential(@Nonnull SignRequestMessage signRequestMessage,

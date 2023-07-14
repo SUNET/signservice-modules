@@ -11,9 +11,9 @@ import se.sunet.edusign.harica.certificate.config.HaricaKeyAndCertificateHandler
  * Spring @Configuration class for providing the {@link HaricaCAKeyAndCertificateHandler} as a bean
  */
 @Configuration
-public class HandlerBeanConfiguration {
+public class CAKeyAndCertHandlerBeanConfiguration {
 
-  @Bean
+  @Bean(name = "signservice.HaricaCAKeyAndCertificateHandler")
   HaricaCAKeyAndCertificateHandler haricaCAKeyAndCertificateHandler() {
     HaricaKeyAndCertificateHandlerFactory factory = new HaricaKeyAndCertificateHandlerFactory();
     HaricaKeyAndCertificateHandlerConfiguration configuration = new HaricaKeyAndCertificateHandlerConfiguration();

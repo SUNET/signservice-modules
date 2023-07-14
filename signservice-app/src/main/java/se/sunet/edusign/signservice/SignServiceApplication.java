@@ -25,7 +25,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * Application main.
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"se.sunet.edusign.harica", "se.sunet.edusign.signservice"})
 @EnableScheduling
 public class SignServiceApplication {
 

@@ -49,7 +49,7 @@ import se.sunet.edusign.harica.authn.config.HaricaCAAuthenticationHandlerConfigu
  */
 @Slf4j
 @Configuration
-public class HandlerBeanConfiguration {
+public class CAAuthnHandlerBeanConfiguration {
 
   /**
    * Creates the Harica AuthenticationHandler as a Bean
@@ -60,7 +60,7 @@ public class HandlerBeanConfiguration {
    * @throws NoSuchProviderException no Bouncycastle provider is available
    * @throws IOException error processing property data
    */
-  @Bean
+  @Bean(name = "signservice.HaricaCAAuthenticationHandler")
   HaricaCAAuthenticationHandler haricaCAAuthenticationHandler(HaricaAuthHandlerConfigurationProperties properties)
     throws CertificateException, NoSuchProviderException, IOException, NoSuchAlgorithmException,
     InvalidKeySpecException {
