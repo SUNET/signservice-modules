@@ -150,7 +150,8 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
       String csr = certificateRequestFactory.generatePKCS10Request(userDetails, credential, algorithm);
 
       // Register certificate request at CA
-      CaCertificateRequest caCertificateRequest = new CaCertificateRequest(context.getId(), userDetails.getUniqueIdentifier(), csr,
+      CaCertificateRequest caCertificateRequest = new CaCertificateRequest(context.getId(),
+        userDetails.getUniqueIdentifier(), csr,
         urlConfiguration.getBaseUrl() + urlConfiguration.getCertificateReturnPath());
       CertificateRequestResult requestResult = certificateRequestService.registerCertificateRequest(
         caCertificateRequest);
@@ -175,7 +176,8 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
         new DefaultHttpRedirectAction(certRequestUrl));
 
       // Store data in session required to complete the authentication and certificate issuing process
-      context.put(SIGNER_CREDENTIAL_KEY, new PKCS8SerializableCredentials(credential.getPrivateKey(), credential.getPublicKey()));
+      context.put(SIGNER_CREDENTIAL_KEY,
+        new PKCS8SerializableCredentials(credential.getPrivateKey(), credential.getPublicKey()));
       context.put(REQUESTED_AUTH_SERVICE_ID, authnRequirements.getAuthnServiceID());
 
       log.debug("{}: Certificate issuing request submitted - {}", context.getId(), responseAction);
@@ -228,7 +230,8 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
       SignedJWT signedJWT = tokenValidator.validateToken(certResponseJwt);
       CaCertificateResponse caCertificateResponse = responseParser.parseTokenPayload(signedJWT.getPayload());
       if (caCertificateResponse.getCertificate() == null) {
-        throw new UserAuthenticationException(AuthenticationErrorCode.INTERNAL_AUTHN_ERROR, "No certificate was returned from CA");
+        throw new UserAuthenticationException(AuthenticationErrorCode.INTERNAL_AUTHN_ERROR,
+          "No certificate was returned from CA");
       }
       List<X509Certificate> signerChain = new ArrayList<>();
       signerChain.add(caCertificateResponse.getCertificate());
@@ -238,13 +241,17 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
       // Store the signing credentials
       context.put(SIGNER_CREDENTIAL_KEY, serializableCredentials);
       // Convert issued certificate to assertion and conclude authentication result
-      return new AuthenticationResultChoice(new CAAuthResult(caCertificateResponse.getCertificate(), caConfiguration.getLoa(), uniqueIdentifierSource, authServiceId));
+      // NOTE that we never display sign message, and we will always return the requested IdP ID as the response IdP for
+      // interop reasons. The IdP declaration is redundant for this handler
+      return new AuthenticationResultChoice(
+        new CAAuthResult(caCertificateResponse.getCertificate(), caConfiguration.getLoa(), uniqueIdentifierSource,
+          authServiceId, false));
     }
     catch (CertificateException | IOException | TokenValidationException e) {
-      throw new UserAuthenticationException(AuthenticationErrorCode.INTERNAL_AUTHN_ERROR, "Failed to issue certificate", e);
+      throw new UserAuthenticationException(AuthenticationErrorCode.INTERNAL_AUTHN_ERROR, "Failed to issue certificate",
+        e);
     }
   }
-
 
   @Override public boolean canProcess(@Nonnull HttpUserRequest httpRequest,
     @Nullable SignServiceContext context) {

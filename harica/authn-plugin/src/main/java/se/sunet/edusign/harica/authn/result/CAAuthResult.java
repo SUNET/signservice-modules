@@ -33,17 +33,42 @@ public class CAAuthResult implements AuthenticationResult {
 
   private final IdentityAssertion identityAssertion;
 
-  public CAAuthResult(X509Certificate certificate, String loa, String uidAttribute, String authServiceId)
+  private boolean displayedSignMessage;
+
+  /**
+   * This constructor instantiates the CA Authentication result by creating an IdentityAssertion object
+   * from an issued certificate and some additional parameters
+   *
+   * @param certificate The issued certificate
+   * @param loa the level of assurance to be declared as the result LoA
+   * @param uidAttribute the attribute type that will be declared as the source of the primary ID attribute value
+   * @param authServiceId the ID of the authentication service that will be declared as the issuer of the assertion
+   * @param displayedSignMessage true if a sign message was displayed to the user
+   * @throws CertificateEncodingException error parsing certificate data
+   * @throws IOException invalid input
+   */
+  public CAAuthResult(X509Certificate certificate, String loa, String uidAttribute, String authServiceId, boolean displayedSignMessage)
     throws CertificateEncodingException, IOException {
+    this.displayedSignMessage = displayedSignMessage;
     this.identityAssertion = getAssertionFromCert(certificate, loa, uidAttribute, authServiceId);
   }
 
+  /**
+   * Get the {@link IdentityAssertion} object of the CA Authentication result
+   *
+   * @return {@link IdentityAssertion}
+   */
   @Override public IdentityAssertion getAssertion() {
     return this.identityAssertion;
   }
 
+  /**
+   * Test if the sign message was displayed. This always returns false as
+   *
+   * @return
+   */
   @Override public boolean signMessageDisplayed() {
-    return false;
+    return displayedSignMessage;
   }
 
   /**
