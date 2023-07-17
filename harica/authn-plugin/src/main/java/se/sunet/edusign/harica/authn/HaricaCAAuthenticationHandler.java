@@ -68,6 +68,7 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
 
   /** Key for storing the signer credentials data */
   public static final String SIGNER_CREDENTIAL_KEY = PREFIX + ".SignerCredentials";
+  public static final String REQUESTED_AUTH_SERVICE_ID = PREFIX + ".AuthServiceId";
 
   @Setter
   private String emailAdressSource = "urn:oid:0.9.2342.19200300.100.1.3";
@@ -175,6 +176,7 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
 
       // Store data in session required to complete the authentication and certificate issuing process
       context.put(SIGNER_CREDENTIAL_KEY, new PKCS8SerializableCredentials(credential.getPrivateKey(), credential.getPublicKey()));
+      context.put(REQUESTED_AUTH_SERVICE_ID, authnRequirements.getAuthnServiceID());
 
       log.debug("{}: Certificate issuing request submitted - {}", context.getId(), responseAction);
       return new AuthenticationResultChoice(responseAction);
@@ -219,6 +221,7 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
       context.getId(), this.getName());
 
     SerializableCredentials serializableCredentials = context.get(SIGNER_CREDENTIAL_KEY);
+    String authServiceId = context.get(REQUESTED_AUTH_SERVICE_ID);
 
     try {
       final String certResponseJwt = httpRequest.getParameter("JWS");
@@ -235,7 +238,7 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
       // Store the signing credentials
       context.put(SIGNER_CREDENTIAL_KEY, serializableCredentials);
       // Convert issued certificate to assertion and conclude authentication result
-      return new AuthenticationResultChoice(new CAAuthResult(caCertificateResponse.getCertificate(), caConfiguration.getLoa(), uniqueIdentifierSource));
+      return new AuthenticationResultChoice(new CAAuthResult(caCertificateResponse.getCertificate(), caConfiguration.getLoa(), uniqueIdentifierSource, authServiceId));
     }
     catch (CertificateException | IOException | TokenValidationException e) {
       throw new UserAuthenticationException(AuthenticationErrorCode.INTERNAL_AUTHN_ERROR, "Failed to issue certificate", e);
@@ -245,8 +248,8 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
 
   @Override public boolean canProcess(@Nonnull HttpUserRequest httpRequest,
     @Nullable SignServiceContext context) {
-    if (httpRequest.getParameter("SAMLResponse") == null) {
-      final String msg = "No SAMLResponse parameter in response";
+    if (httpRequest.getParameter("JWS") == null) {
+      final String msg = "Certificate response parameter in response";
       log.debug("{}: {}", Optional.ofNullable(context).map(SignServiceContext::getId).orElse(""), msg);
       return false;
     }
@@ -256,15 +259,6 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
       log.info("{}: Path {} is not supported by handler '{}'",
         Optional.ofNullable(context).map(SignServiceContext::getId).orElse(""), requestPath, this.getName());
       return false;
-    }
-
-    if (context == null) {
-      log.debug("No certificate request context available in session - can not process response message");
-      return false;
-    }
-
-    if (context.get(SIGNER_CREDENTIAL_KEY) == null) {
-      log.debug("{}: No signer credentials available in session - can not process response message", context.getId());
     }
 
     return true;

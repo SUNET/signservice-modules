@@ -3,6 +3,7 @@ package se.sunet.edusign.harica.authn.result;
 import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +33,9 @@ public class CAAuthResult implements AuthenticationResult {
 
   private final IdentityAssertion identityAssertion;
 
-  public CAAuthResult(X509Certificate certificate, String loa, String uidAttribute)
+  public CAAuthResult(X509Certificate certificate, String loa, String uidAttribute, String authServiceId)
     throws CertificateEncodingException, IOException {
-    this.identityAssertion = getAssertionFromCert(certificate, loa, uidAttribute);
+    this.identityAssertion = getAssertionFromCert(certificate, loa, uidAttribute, authServiceId);
   }
 
   @Override public IdentityAssertion getAssertion() {
@@ -50,16 +51,16 @@ public class CAAuthResult implements AuthenticationResult {
    *
    * @return IdentityAssertion
    */
-  private IdentityAssertion getAssertionFromCert(X509Certificate certificate, String loa, String uidAttribute)
+  private IdentityAssertion getAssertionFromCert(X509Certificate certificate, String loa, String uidAttribute, String authServiceId)
     throws CertificateEncodingException, IOException {
 
     DefaultIdentityAssertion assertion = new DefaultIdentityAssertion();
     assertion.setScheme("PKI");
     assertion.setIdentifier(certificate.getSerialNumber().toString(16));
     assertion.setEncodedAssertion(certificate.getEncoded());
-    assertion.setIssuer(certificate.getIssuerX500Principal().toString());
+    assertion.setIssuer(authServiceId);
     assertion.setAuthnContext(new SimpleAuthnContextIdentifier(loa));
-    assertion.setAuthnInstant(certificate.getNotBefore().toInstant());
+    assertion.setAuthnInstant(Instant.now());
     assertion.setIdentityAttributes(getAttributes(certificate, uidAttribute));
 
     return assertion;
@@ -76,19 +77,21 @@ public class CAAuthResult implements AuthenticationResult {
     List<SubjectAttributeInfo> attributeInfoList = getAttributeInfoList(certificate.getSubjectX500Principal());
 
     addAttribute(BCStyle.SERIALNUMBER, uidAttribute,
-      "personIdentifier" ,attributeInfoList, assertionAttributes);
+      "personIdentifier", attributeInfoList, assertionAttributes);
     addAttribute(BCStyle.SURNAME, "urn:oid:2.5.4.4",
-      "surname" ,attributeInfoList, assertionAttributes);
+      "surname", attributeInfoList, assertionAttributes);
     addAttribute(BCStyle.GIVENNAME, "urn:oid:2.5.4.42",
-      "givenName" ,attributeInfoList, assertionAttributes);
+      "givenName", attributeInfoList, assertionAttributes);
     addAttribute(BCStyle.EmailAddress, "urn:oid:0.9.2342.19200300.100.1.3",
-      "email" ,attributeInfoList, assertionAttributes);
+      "email", attributeInfoList, assertionAttributes);
     addAttribute(BCStyle.CN, "urn:oid:2.16.840.1.113730.3.1.241",
-      "displayName" ,attributeInfoList, assertionAttributes);
+      "displayName", attributeInfoList, assertionAttributes);
+    addAttribute(BCStyle.C, "urn:oid:2.5.4.6", "country", attributeInfoList, assertionAttributes);
     return assertionAttributes;
   }
 
-  private void addAttribute(ASN1ObjectIdentifier certAttr, String assertionAttr, String friendlyName, List<SubjectAttributeInfo> certAttrList, List<IdentityAttribute<?>> assertionAttributes) {
+  private void addAttribute(ASN1ObjectIdentifier certAttr, String assertionAttr, String friendlyName,
+    List<SubjectAttributeInfo> certAttrList, List<IdentityAttribute<?>> assertionAttributes) {
 
     Optional<SubjectAttributeInfo> certAttrOptional = certAttrList.stream()
       .filter(subjectAttributeInfo -> subjectAttributeInfo.getOid().equals(certAttr))
