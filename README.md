@@ -8,8 +8,12 @@ A packaging of a Signature Service built using DIGG's open source repository htt
 
 ## About
 
-This repository contains plugin modules for a SignService to be used in a Swamid/NORDUnet
-environment. We build the SignService using DIGG:s Open Source packing of a SignService - https://github.com/swedenconnect/signservice.
+This repository contains plugin modules for a SignService to be used in a number of setups relevant for eduSign. These are:
+
+- User authentication using Swamid/NORDUnet federation
+- User authentication done by the Harica CA when issuing certificates based on MyAcademic ID authentication
+
+We build the SignService using DIGG:s Open Source packing of a SignService - https://github.com/swedenconnect/signservice.
 
 For documentation of the SignService base, including detailed configuration instructions,
 see https://docs.swedenconnect.se/signservice/.
@@ -22,6 +26,9 @@ A good example is to view the [application-sandbox.yml](https://github.com/SUNET
 is a documented configuration file for the test installation of this application.
 
 > Go to https://sig2.idsec.se/sigdemo2/open/login to test it.
+
+The Harica CA setup has its own configuration documentation [here](harica/README.md).
+
 
 ## Building and installing
 
@@ -67,6 +74,8 @@ for the application.
 > A template `config` directory with an `application.yml` is available (but not posted here).
 
 ## Adding Clients and Publishing of SAML metadata
+
+This section is relevant only when user authentication is done using a SAML federation (Swamid/NORDUnet).
 
 The `application.yml` file contains the entire SignService configuration along with one, or more, "engines".
 A SignService engine is really a configuration for one client (relying party).
