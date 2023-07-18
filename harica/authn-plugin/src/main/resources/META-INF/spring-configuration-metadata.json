@@ -1,0 +1,19 @@
+{
+  "groups": [
+    {
+      "name": "",
+      "type": "se.sunet.edusign.harica.authn.config.HaricaCAAuthenticationHandlerConfiguration",
+      "description": "Harica CA Authentication Handler Configuration.",
+      "sourceType": "se.sunet.edusign.harica.authn.config.HaricaCAAuthenticationHandlerConfiguration"
+    }
+  ],
+  "properties": [
+    {
+      "name": "name",
+      "type": "java.lang.String",
+      "description": "The name of the authentication handler.",
+      "sourceType": "se.sunet.edusign.harica.authn.config.HaricaCAAuthenticationHandlerConfiguration"
+    }
+ ],
+  "hints": []
+}

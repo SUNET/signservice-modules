@@ -9,7 +9,7 @@
   <parent>
     <groupId>se.sunet.edusign</groupId>
     <artifactId>edusign-signservice-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
   </parent>  
 
   <name>Sunet :: eduSign :: SignService Application</name>
@@ -135,7 +135,6 @@
       <version>${project.version}</version>      
     </dependency>
     
-    <!--
     <dependency>
       <groupId>se.sunet.edusign.harica</groupId>
       <artifactId>edusign-harica-authn-plugin</artifactId>
@@ -147,7 +146,6 @@
       <artifactId>edusign-harica-keycert-plugin</artifactId>
       <version>${project.version}</version>
     </dependency>
-    -->
 
     <dependency>
       <groupId>org.webjars</groupId>

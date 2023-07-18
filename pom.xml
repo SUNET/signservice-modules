@@ -5,7 +5,7 @@
 
   <groupId>se.sunet.edusign</groupId>
   <artifactId>edusign-signservice-parent</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <packaging>pom</packaging>
 
   <name>Sunet :: eduSign</name>
@@ -131,7 +131,7 @@
 
   <modules>
     <module>saml-plugin</module>
-    <!--<module>harica</module>-->
+    <module>harica</module>
     <module>signservice-app</module>
   </modules>
 
