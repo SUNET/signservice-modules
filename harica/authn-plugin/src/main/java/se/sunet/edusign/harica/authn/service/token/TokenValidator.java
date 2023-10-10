@@ -14,12 +14,6 @@ import com.nimbusds.jose.crypto.ECDSAVerifier;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.SignedJWT;
 
-import lombok.extern.slf4j.Slf4j;
-
-/**
- * Description
- */
-@Slf4j
 public class TokenValidator {
 
   private final TokenCredential trustedCredential;
@@ -54,7 +48,7 @@ public class TokenValidator {
   }
 
   private JWSVerifier getVerifier(SignedJWT signedJWT)
-    throws TokenValidationException, CertificateEncodingException, NoSuchAlgorithmException, JOSEException {
+      throws TokenValidationException, CertificateEncodingException, NoSuchAlgorithmException, JOSEException {
 
     JWSHeader header = signedJWT.getHeader();
 
@@ -65,7 +59,7 @@ public class TokenValidator {
     PublicKey publicKey = trustedCredential.getPublicKey();
     if (publicKey == null) {
       throw new TokenValidationException(
-        "No trusted public key matches the Id token JWT header declarations", signedJWT);
+          "No trusted public key matches the Id token JWT header declarations", signedJWT);
     }
 
     if (publicKey instanceof ECPublicKey) {
@@ -73,6 +67,5 @@ public class TokenValidator {
     }
     return new RSASSAVerifier((RSAPublicKey) publicKey);
   }
-
 
 }

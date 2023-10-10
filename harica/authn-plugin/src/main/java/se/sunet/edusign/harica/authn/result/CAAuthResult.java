@@ -31,13 +31,15 @@ import se.swedenconnect.signservice.core.attribute.saml.impl.StringSamlIdentityA
  */
 public class CAAuthResult implements AuthenticationResult {
 
+  private static final long serialVersionUID = 4494910561079879178L;
+
   private final IdentityAssertion identityAssertion;
 
   private boolean displayedSignMessage;
 
   /**
-   * This constructor instantiates the CA Authentication result by creating an IdentityAssertion object
-   * from an issued certificate and some additional parameters
+   * This constructor instantiates the CA Authentication result by creating an IdentityAssertion object from an issued
+   * certificate and some additional parameters
    *
    * @param certificate The issued certificate
    * @param loa the level of assurance to be declared as the result LoA
@@ -47,8 +49,9 @@ public class CAAuthResult implements AuthenticationResult {
    * @throws CertificateEncodingException error parsing certificate data
    * @throws IOException invalid input
    */
-  public CAAuthResult(X509Certificate certificate, String loa, String uidAttribute, String authServiceId, boolean displayedSignMessage)
-    throws CertificateEncodingException, IOException {
+  public CAAuthResult(X509Certificate certificate, String loa, String uidAttribute, String authServiceId,
+      boolean displayedSignMessage)
+      throws CertificateEncodingException, IOException {
     this.displayedSignMessage = displayedSignMessage;
     this.identityAssertion = getAssertionFromCert(certificate, loa, uidAttribute, authServiceId);
   }
@@ -58,7 +61,8 @@ public class CAAuthResult implements AuthenticationResult {
    *
    * @return {@link IdentityAssertion}
    */
-  @Override public IdentityAssertion getAssertion() {
+  @Override
+  public IdentityAssertion getAssertion() {
     return this.identityAssertion;
   }
 
@@ -67,7 +71,8 @@ public class CAAuthResult implements AuthenticationResult {
    *
    * @return
    */
-  @Override public boolean signMessageDisplayed() {
+  @Override
+  public boolean signMessageDisplayed() {
     return displayedSignMessage;
   }
 
@@ -76,8 +81,9 @@ public class CAAuthResult implements AuthenticationResult {
    *
    * @return IdentityAssertion
    */
-  private IdentityAssertion getAssertionFromCert(X509Certificate certificate, String loa, String uidAttribute, String authServiceId)
-    throws CertificateEncodingException, IOException {
+  private IdentityAssertion getAssertionFromCert(X509Certificate certificate, String loa, String uidAttribute,
+      String authServiceId)
+      throws CertificateEncodingException, IOException {
 
     DefaultIdentityAssertion assertion = new DefaultIdentityAssertion();
     assertion.setScheme("PKI");
@@ -96,33 +102,33 @@ public class CAAuthResult implements AuthenticationResult {
    * the AuthContext extension and use its attribute mapping to locate the origin attribute names.
    */
   private List<IdentityAttribute<?>> getAttributes(X509Certificate certificate, String uidAttribute)
-    throws IOException {
+      throws IOException {
 
     List<IdentityAttribute<?>> assertionAttributes = new ArrayList<>();
     List<SubjectAttributeInfo> attributeInfoList = getAttributeInfoList(certificate.getSubjectX500Principal());
 
     addAttribute(BCStyle.SERIALNUMBER, uidAttribute,
-      "personIdentifier", attributeInfoList, assertionAttributes);
+        "personIdentifier", attributeInfoList, assertionAttributes);
     addAttribute(BCStyle.SURNAME, "urn:oid:2.5.4.4",
-      "surname", attributeInfoList, assertionAttributes);
+        "surname", attributeInfoList, assertionAttributes);
     addAttribute(BCStyle.GIVENNAME, "urn:oid:2.5.4.42",
-      "givenName", attributeInfoList, assertionAttributes);
+        "givenName", attributeInfoList, assertionAttributes);
     addAttribute(BCStyle.EmailAddress, "urn:oid:0.9.2342.19200300.100.1.3",
-      "email", attributeInfoList, assertionAttributes);
+        "email", attributeInfoList, assertionAttributes);
     addAttribute(BCStyle.CN, "urn:oid:2.16.840.1.113730.3.1.241",
-      "displayName", attributeInfoList, assertionAttributes);
+        "displayName", attributeInfoList, assertionAttributes);
     addAttribute(BCStyle.C, "urn:oid:2.5.4.6", "country", attributeInfoList, assertionAttributes);
     return assertionAttributes;
   }
 
   private void addAttribute(ASN1ObjectIdentifier certAttr, String assertionAttr, String friendlyName,
-    List<SubjectAttributeInfo> certAttrList, List<IdentityAttribute<?>> assertionAttributes) {
+      List<SubjectAttributeInfo> certAttrList, List<IdentityAttribute<?>> assertionAttributes) {
 
     Optional<SubjectAttributeInfo> certAttrOptional = certAttrList.stream()
-      .filter(subjectAttributeInfo -> subjectAttributeInfo.getOid().equals(certAttr))
-      .findFirst();
+        .filter(subjectAttributeInfo -> subjectAttributeInfo.getOid().equals(certAttr))
+        .findFirst();
     certAttrOptional.ifPresent(subjectAttributeInfo -> assertionAttributes.add(
-      new StringSamlIdentityAttribute(assertionAttr, friendlyName, subjectAttributeInfo.getValue())));
+        new StringSamlIdentityAttribute(assertionAttr, friendlyName, subjectAttributeInfo.getValue())));
   }
 
   public static List<SubjectAttributeInfo> getAttributeInfoList(X500Principal name) throws IOException {
@@ -135,7 +141,7 @@ public class CAAuthResult implements AuthenticationResult {
         for (ASN1Encodable encodable : rdnSet) {
           ASN1Sequence rdnSeq = (ASN1Sequence) encodable;
           ASN1ObjectIdentifier rdnOid = (ASN1ObjectIdentifier) rdnSeq.getObjectAt(0);
-          //String oidStr = rdnOid.getId();
+          // String oidStr = rdnOid.getId();
           ASN1Encodable rdnVal = rdnSeq.getObjectAt(1);
           String rdnValStr = getStringValue(rdnVal);
           attrInfoList.add(new SubjectAttributeInfo(rdnOid, rdnValStr));

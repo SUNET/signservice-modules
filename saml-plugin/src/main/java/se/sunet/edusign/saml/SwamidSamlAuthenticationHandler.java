@@ -3,6 +3,7 @@ package se.sunet.edusign.saml;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.opensaml.saml.common.assertion.ValidationContext;
+import org.opensaml.saml.saml2.assertion.SAML2AssertionValidationParameters;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 
@@ -27,6 +30,7 @@ import se.swedenconnect.signservice.authn.saml.config.SpUrlConfiguration;
 import se.swedenconnect.signservice.context.SignServiceContext;
 import se.swedenconnect.signservice.core.attribute.IdentityAttribute;
 import se.swedenconnect.signservice.core.attribute.saml.impl.StringSamlIdentityAttribute;
+import se.swedenconnect.signservice.core.http.HttpUserRequest;
 import se.swedenconnect.signservice.protocol.msg.AuthnRequirements;
 import se.swedenconnect.signservice.protocol.msg.SignMessage;
 
@@ -81,10 +85,11 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
             // the value that was requested.
             //
             final IdentityAttribute<?> updatedEduPersonAssurance =
-                new StringSamlIdentityAttribute(EDU_PERSON_ASSURANCE_NAME, eduPersonAssurance.getFriendlyName(), (String)value); 
+                new StringSamlIdentityAttribute(EDU_PERSON_ASSURANCE_NAME, eduPersonAssurance.getFriendlyName(),
+                    (String) value);
             issuedAttributes.removeIf(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()));
             issuedAttributes.add(updatedEduPersonAssurance);
-            
+
             return;
           }
         }
@@ -173,6 +178,15 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
   protected void resetContext(final SignServiceContext context) {
     super.resetContext(context);
     context.remove(REQUESTED_AUTHN_CONTEXT_KEY);
+  }
+
+  /**
+   * We want to make sure that we don't fail on non-signed responses ...
+   */
+  @Override
+  protected ValidationContext createValidationContext(
+      final HttpUserRequest httpRequest, final SignServiceContext context) {
+    return new ValidationContext(Map.of(SAML2AssertionValidationParameters.SIGNATURE_REQUIRED, Boolean.FALSE));
   }
 
 }

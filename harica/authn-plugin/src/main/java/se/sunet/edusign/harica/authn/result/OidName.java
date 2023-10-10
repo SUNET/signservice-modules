@@ -1,26 +1,7 @@
-/*
- * Copyright (c) 2021. IDsec Solutions AB (IDsec)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package se.sunet.edusign.harica.authn.result;
 
 import org.bouncycastle.asn1.x509.AccessDescription;
 
-/**
- *
- * @author stefan
- */
 public enum OidName {
     cp_anyPolicy("anyPolicy", "2.5.29.32.0"),
     cp_etsiQcPubSscd("ETSI QC Public with SSCD (0.4.0.1456.1.1)", "0.4.0.1456.1.1"),
@@ -45,9 +26,8 @@ public enum OidName {
     id_pkix_ad_caRepository("caRepository","1.3.6.1.5.5.7.48.5"),
     id_pkix_ad_timestamping("timeStamping","1.3.6.1.5.5.7.48.3"),
     id_pkix_ad_caIssuers("caIssuers", AccessDescription.id_ad_caIssuers.getId()),
-    id_pkix_ad_ocsp("ocsp", AccessDescription.id_ad_ocsp.getId()),
-    ;
-    
+    id_pkix_ad_ocsp("ocsp", AccessDescription.id_ad_ocsp.getId());
+
     String name;
     String oid;
 
@@ -63,9 +43,9 @@ public enum OidName {
     public String getOid() {
         return oid;
     }
-    
-    
-    
+
+
+
     public static String getName(String oidStr){
         for (OidName oid : values()){
             if (oid.getOid().equalsIgnoreCase(oidStr)){
@@ -74,5 +54,5 @@ public enum OidName {
         }
         return oidStr;
     }
-    
+
 }

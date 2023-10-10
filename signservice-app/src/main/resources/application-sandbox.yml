@@ -201,7 +201,7 @@ signservice:
             key-password: secret
         sign-authn-requests: true
         require-encrypted-assertions: false
-        require-signed-assertions: false
+        require-signed-assertions: true
         message-replay-checker-ref: signservice.MessageReplayChecker
         metadata:
           entity-categories:

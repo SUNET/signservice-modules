@@ -1,7 +1,5 @@
 package se.sunet.edusign.harica.authn.service.token;
 
-import java.io.Serial;
-
 import com.nimbusds.jwt.SignedJWT;
 
 import lombok.Getter;
@@ -11,9 +9,10 @@ import lombok.Getter;
  */
 public class TokenValidationException extends Exception {
 
-  @Getter private final SignedJWT signedJWT;
-
   private static final long serialVersionUID = -6908586099690472926L;
+
+  @Getter
+  private final SignedJWT signedJWT;
 
   /** {@inheritDoc} */
   public TokenValidationException(String message, SignedJWT signedJWT) {

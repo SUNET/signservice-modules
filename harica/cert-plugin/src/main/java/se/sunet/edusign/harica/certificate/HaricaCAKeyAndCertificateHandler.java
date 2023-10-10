@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import se.sunet.edusign.harica.commons.SerializableCredentials;
 import se.swedenconnect.security.credential.BasicCredential;
 import se.swedenconnect.security.credential.PkiCredential;
 import se.swedenconnect.signservice.authn.IdentityAssertion;
@@ -14,14 +15,13 @@ import se.swedenconnect.signservice.context.SignServiceContext;
 import se.swedenconnect.signservice.core.AbstractSignServiceHandler;
 import se.swedenconnect.signservice.core.types.InvalidRequestException;
 import se.swedenconnect.signservice.protocol.SignRequestMessage;
-import se.sunet.edusign.harica.commons.SerializableCredentials;
 
 /**
- * Provide the sign service credentials based on completed authentication and certificate issuance using the
- * Harica CA API.
+ * Provide the sign service credentials based on completed authentication and certificate issuance using the Harica CA
+ * API.
  */
 public class HaricaCAKeyAndCertificateHandler extends AbstractSignServiceHandler
-  implements KeyAndCertificateHandler {
+    implements KeyAndCertificateHandler {
 
   /** Prefix for all context values that we store/retrieve. */
   public static final String PREFIX = "se.swedenconnect.signservice.harica";
@@ -35,17 +35,20 @@ public class HaricaCAKeyAndCertificateHandler extends AbstractSignServiceHandler
   public HaricaCAKeyAndCertificateHandler() {
   }
 
-  @Override public void checkRequirements(@Nonnull SignRequestMessage signRequestMessage,
-    @Nonnull SignServiceContext context) throws InvalidRequestException {
+  @Override
+  public void checkRequirements(@Nonnull SignRequestMessage signRequestMessage,
+      @Nonnull SignServiceContext context) throws InvalidRequestException {
     // No checks to be made
   }
 
-  @Nonnull @Override public PkiCredential generateSigningCredential(@Nonnull SignRequestMessage signRequestMessage,
-    @Nonnull IdentityAssertion identityAssertion, @Nonnull SignServiceContext context)
-    throws KeyException, CertificateException {
+  @Nonnull
+  @Override
+  public PkiCredential generateSigningCredential(@Nonnull SignRequestMessage signRequestMessage,
+      @Nonnull IdentityAssertion identityAssertion, @Nonnull SignServiceContext context)
+      throws KeyException, CertificateException {
 
     SerializableCredentials serializableCredentials = Objects.requireNonNull(context.get(SIGNER_CREDENTIAL_KEY),
-      "Session stored signing credentials must not be null");
+        "Session stored signing credentials must not be null");
 
     if (serializableCredentials.getCertificate() == null) {
       throw new CertificateException("No signer certificate is available");
@@ -54,7 +57,7 @@ public class HaricaCAKeyAndCertificateHandler extends AbstractSignServiceHandler
       throw new CertificateException("No signer certificate chain is available");
     }
     PkiCredential pkiCredential = new BasicCredential(serializableCredentials.getCertificateChain(),
-      serializableCredentials.getPrivateKey());
+        serializableCredentials.getPrivateKey());
     serializableCredentials.destroy();
     context.remove(SIGNER_CREDENTIAL_KEY);
     return pkiCredential;

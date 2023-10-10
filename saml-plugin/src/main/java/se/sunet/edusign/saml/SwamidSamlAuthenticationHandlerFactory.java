@@ -7,6 +7,7 @@ import se.swedenconnect.opensaml.saml2.response.ResponseProcessor;
 import se.swedenconnect.signservice.authn.AuthenticationHandler;
 import se.swedenconnect.signservice.authn.saml.config.SamlAuthenticationHandlerConfiguration;
 import se.swedenconnect.signservice.authn.saml.config.SamlAuthenticationHandlerFactory;
+import se.swedenconnect.signservice.core.config.BeanLoader;
 
 /**
  * A factory for creating {@link SwamidSamlAuthenticationHandler} instances.
@@ -49,6 +50,23 @@ public class SwamidSamlAuthenticationHandlerFactory extends SamlAuthenticationHa
       return super.createHandler(config, metadataProvider, entityDescriptorContainer, responseProcessor,
           authnRequestGenerator, preferredRequestBinding);
     }
+  }
+
+  /**
+   * Asserts that we require signed assertions ...
+   */
+  @Override
+  protected ResponseProcessor createResponseProcessor(final SamlAuthenticationHandlerConfiguration config,
+      final BeanLoader beanLoader, final MetadataProvider metadataProvider) {
+
+    if (config.getRequireSignedAssertions() == null) {
+      config.setRequireSignedAssertions(true);
+    }
+    if (config.getRequireSignedAssertions() != null && !config.getRequireEncryptedAssertions().booleanValue()) {
+      throw new IllegalArgumentException("require-signed-assertions is set to false - this is not allowed for Swamid");
+    }
+
+    return super.createResponseProcessor(config, beanLoader, metadataProvider);
   }
 
 }

@@ -24,14 +24,13 @@ import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.util.io.pem.PemWriter;
 
-import lombok.extern.slf4j.Slf4j;
 import se.sunet.edusign.harica.commons.SerializableCredentials;
 
 /**
  * Implementation of the {@link SerializableCredentials} that stores the private key as PEM formatted PKCS8 data
  */
-@Slf4j
 public class PKCS8SerializableCredentials implements SerializableCredentials {
+
   private static final long serialVersionUID = 2498510487438648389L;
 
   private static final CertificateFactory cf;
@@ -78,7 +77,8 @@ public class PKCS8SerializableCredentials implements SerializableCredentials {
   }
 
   /** {@inheritDoc} */
-  @Override public PrivateKey getPrivateKey() {
+  @Override
+  public PrivateKey getPrivateKey() {
     if (this.privateKey == null) {
       return null;
     }
@@ -91,7 +91,8 @@ public class PKCS8SerializableCredentials implements SerializableCredentials {
   }
 
   /** {@inheritDoc} */
-  @Override public PublicKey getPublicKey() {
+  @Override
+  public PublicKey getPublicKey() {
     if (this.publicKey != null) {
       try (PEMParser pemParser = new PEMParser(new StringReader(publicKey))) {
         return new JcaPEMKeyConverter().getPublicKey(getPublicKeyInfo(pemParser.readObject()));
@@ -104,12 +105,14 @@ public class PKCS8SerializableCredentials implements SerializableCredentials {
   }
 
   /** {@inheritDoc} */
-  @Override public X509Certificate getCertificate() {
+  @Override
+  public X509Certificate getCertificate() {
     return getCertificateChain().isEmpty() ? null : getCertificateChain().get(0);
   }
 
   /** {@inheritDoc} */
-  @Override public List<X509Certificate> getCertificateChain() {
+  @Override
+  public List<X509Certificate> getCertificateChain() {
     if (this.chain == null) {
       this.chain = new ArrayList<>();
     }
@@ -127,7 +130,8 @@ public class PKCS8SerializableCredentials implements SerializableCredentials {
   }
 
   /** {@inheritDoc} */
-  @Override public void setCertificateChain(List<X509Certificate> certificateChain) {
+  @Override
+  public void setCertificateChain(List<X509Certificate> certificateChain) {
     this.chain = new ArrayList<>();
     try {
       for (X509Certificate certificate : certificateChain) {
@@ -140,7 +144,8 @@ public class PKCS8SerializableCredentials implements SerializableCredentials {
   }
 
   /** {@inheritDoc} */
-  @Override public void destroy() {
+  @Override
+  public void destroy() {
     this.publicKey = null;
     this.privateKey = null;
     this.chain = null;

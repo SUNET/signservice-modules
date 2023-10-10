@@ -1,23 +1,7 @@
-/*
- * Copyright 2022 Sweden Connect
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package se.sunet.edusign.harica.authn.config;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.cert.X509Certificate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -33,7 +17,7 @@ import se.swedenconnect.signservice.core.config.AbstractHandlerConfiguration;
  * Base class for configuring CA authentication handlers using the Harica API.
  */
 public class HaricaCAAuthenticationHandlerConfiguration
-  extends AbstractHandlerConfiguration<AuthenticationHandler> {
+    extends AbstractHandlerConfiguration<AuthenticationHandler> {
 
   /** HTTP connect timeout in milliseconds */
   @Getter
@@ -59,7 +43,10 @@ public class HaricaCAAuthenticationHandlerConfiguration
   @Getter
   PublicKey trustedCaTokenVerificationKey;
 
-  /** URL configuration settings for this SP specifying URL end points provided by this service to communicate with the CA */
+  /**
+   * URL configuration settings for this SP specifying URL end points provided by this service to communicate with the
+   * CA
+   */
   @Getter
   SpUrlConfiguration spUrlConfiguration;
 
@@ -67,19 +54,31 @@ public class HaricaCAAuthenticationHandlerConfiguration
   @Getter
   CaConfiguration caConfiguration;
 
-  /** The name of the attribute specified in sign request as the ID of attributes used to provide the e-mail of the signer */
+  /**
+   * The name of the attribute specified in sign request as the ID of attributes used to provide the e-mail of the
+   * signer
+   */
   @Getter
   String emailAdressSource;
 
-  /** The name of the attribute specified in sign request as the ID of attributes used to provide the unique identifier of the signer */
+  /**
+   * The name of the attribute specified in sign request as the ID of attributes used to provide the unique identifier
+   * of the signer
+   */
   @Getter
   String uniqueIdentifierSource;
 
-  /** The name of the attribute specified in sign request as the ID of attributes used to provide the surname of the signer */
+  /**
+   * The name of the attribute specified in sign request as the ID of attributes used to provide the surname of the
+   * signer
+   */
   @Getter
   String surnameSource;
 
-  /** The name of the attribute specified in sign request as the ID of attributes used to provide the given name of the signer */
+  /**
+   * The name of the attribute specified in sign request as the ID of attributes used to provide the given name of the
+   * signer
+   */
   @Getter
   String givenNameSource;
 
@@ -105,17 +104,17 @@ public class HaricaCAAuthenticationHandlerConfiguration
 
   public void setRequestSigningCredential(@Nonnull final PrivateKey requestSigningCredential) {
     this.requestSigningCredential = Objects.requireNonNull(requestSigningCredential,
-      "requestSigningCredential must not be null");
+        "requestSigningCredential must not be null");
   }
 
   public void setRequestSigningAlgorithm(@Nonnull final JWSAlgorithm requestSigningAlgorithm) {
     this.requestSigningAlgorithm = Objects.requireNonNull(requestSigningAlgorithm,
-      "requestSigningAlgorithm must not be null");
+        "requestSigningAlgorithm must not be null");
   }
 
   public void setTrustedCaTokenVerificationKey(@Nonnull final PublicKey trustedCaTokenVerificationKey) {
     this.trustedCaTokenVerificationKey = Objects.requireNonNull(trustedCaTokenVerificationKey,
-      "trustedCaTokenSignerCert must not be null");
+        "trustedCaTokenSignerCert must not be null");
   }
 
   public void setEmailAdressSource(@Nullable final String emailAdressSource) {

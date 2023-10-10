@@ -5,10 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Description
- */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
