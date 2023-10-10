@@ -46,11 +46,11 @@ public class TokenCredential {
   }
 
   public TokenCredential(PublicKey publicKey, String kid) {
-    this (null, publicKey, null, kid);
+    this(null, publicKey, null, kid);
   }
 
   public TokenCredential(PublicKey publicKey) {
-    this (null, publicKey, null, null);
+    this(null, publicKey, null, null);
   }
 
   private static byte[] getThumbprint(X509Certificate certificate) {

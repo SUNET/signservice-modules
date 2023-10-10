@@ -8,7 +8,7 @@ import se.sunet.edusign.harica.certificate.config.HaricaKeyAndCertificateHandler
 import se.sunet.edusign.harica.certificate.config.HaricaKeyAndCertificateHandlerFactory;
 
 /**
- * Spring @Configuration class for providing the {@link HaricaCAKeyAndCertificateHandler} as a bean
+ * Spring Configuration class for providing the {@link HaricaCAKeyAndCertificateHandler} as a bean
  */
 @Configuration
 public class CAKeyAndCertHandlerBeanConfiguration {

@@ -18,9 +18,6 @@ import com.nimbusds.jose.Payload;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Description
- */
 @RequiredArgsConstructor
 public class ResponseParser {
 
@@ -31,17 +28,17 @@ public class ResponseParser {
 
     CaCertificateResponse.CaCertificateResponseBuilder builder = CaCertificateResponse.builder();
 
-    Map responsemap = objectMapper.readValue(payload.toString(),
-      Map.class);
+    Map<?, ?> responsemap = objectMapper.readValue(payload.toString(),
+        Map.class);
 
-    try(PEMParser pemParser = new PEMParser(new StringReader((String)responsemap.get("certificate")))) {
-      //PemObject pemObject = pemParser.readPemObject();
+    try (PEMParser pemParser = new PEMParser(new StringReader((String) responsemap.get("certificate")))) {
+      // PemObject pemObject = pemParser.readPemObject();
       Object certObject = pemParser.readObject();
       if (certObject instanceof X509CertificateHolder) {
         builder.certificate(getCert(certObject));
       }
     }
-    try(PEMParser pemParser = new PEMParser(new StringReader((String)responsemap.get("certificate")))) {
+    try (PEMParser pemParser = new PEMParser(new StringReader((String) responsemap.get("certificate")))) {
 
       List<X509Certificate> certChain = new ArrayList<>();
       for (Object pkcs7Object = pemParser.readObject(); pkcs7Object != null; pkcs7Object = pemParser.readObject()) {
@@ -52,16 +49,17 @@ public class ResponseParser {
       builder.chain(certChain);
     }
     return builder
-      .signatureId((String) responsemap.get("signatureId"))
-      .uniqueIdentifier((String) responsemap.get("uniqueIdentifier"))
-      .build();
+        .signatureId((String) responsemap.get("signatureId"))
+        .uniqueIdentifier((String) responsemap.get("uniqueIdentifier"))
+        .build();
   }
 
   private X509Certificate getCert(Object certHolderObj) throws CertificateException {
-    try{
+    try {
       return (X509Certificate) certificateFactory.generateCertificate(
-        new ByteArrayInputStream(((X509CertificateHolder) certHolderObj).getEncoded()));
-    } catch (IOException ex) {
+          new ByteArrayInputStream(((X509CertificateHolder) certHolderObj).getEncoded()));
+    }
+    catch (IOException ex) {
       throw new CertificateException("Unable to parse certificate holder object");
     }
   }

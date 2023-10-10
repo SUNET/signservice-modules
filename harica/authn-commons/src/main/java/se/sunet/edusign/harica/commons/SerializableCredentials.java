@@ -7,8 +7,8 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 /**
- * Interface for storing serializable credential data that can recreate the credential and its ability to destroy the key
- * when reconstructed from serialized form.
+ * Interface for storing serializable credential data that can recreate the credential and its ability to destroy the
+ * key when reconstructed from serialized form.
  */
 public interface SerializableCredentials extends Serializable {
 

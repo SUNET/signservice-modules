@@ -7,10 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Description
- *
- */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

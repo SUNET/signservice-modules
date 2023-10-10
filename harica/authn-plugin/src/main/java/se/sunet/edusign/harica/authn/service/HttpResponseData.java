@@ -8,7 +8,7 @@ import lombok.Getter;
  * HttpResponseData
  */
 @Getter
-public class HttpResponseData{
+public class HttpResponseData {
 
   public HttpResponseData(StatusLine statusLine, byte[] data) {
     this.statusLine = statusLine;
