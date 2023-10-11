@@ -62,7 +62,7 @@ public class SwamidSamlAuthenticationHandlerFactory extends SamlAuthenticationHa
     if (config.getRequireSignedAssertions() == null) {
       config.setRequireSignedAssertions(true);
     }
-    if (config.getRequireSignedAssertions() != null && !config.getRequireEncryptedAssertions().booleanValue()) {
+    if (config.getRequireSignedAssertions() != null && !config.getRequireSignedAssertions().booleanValue()) {
       throw new IllegalArgumentException("require-signed-assertions is set to false - this is not allowed for Swamid");
     }
 
