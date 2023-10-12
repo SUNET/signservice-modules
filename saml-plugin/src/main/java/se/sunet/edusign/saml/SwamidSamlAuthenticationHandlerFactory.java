@@ -1,13 +1,18 @@
 package se.sunet.edusign.saml;
 
+import java.util.Optional;
+
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import se.swedenconnect.opensaml.saml2.metadata.EntityDescriptorContainer;
 import se.swedenconnect.opensaml.saml2.metadata.provider.MetadataProvider;
 import se.swedenconnect.opensaml.saml2.request.AuthnRequestGenerator;
 import se.swedenconnect.opensaml.saml2.response.ResponseProcessor;
+import se.swedenconnect.opensaml.saml2.response.replay.MessageReplayChecker;
+import se.swedenconnect.opensaml.saml2.response.validation.ResponseValidationSettings;
+import se.swedenconnect.opensaml.xmlsec.encryption.support.SAMLObjectDecrypter;
 import se.swedenconnect.signservice.authn.AuthenticationHandler;
 import se.swedenconnect.signservice.authn.saml.config.SamlAuthenticationHandlerConfiguration;
 import se.swedenconnect.signservice.authn.saml.config.SamlAuthenticationHandlerFactory;
-import se.swedenconnect.signservice.core.config.BeanLoader;
 
 /**
  * A factory for creating {@link SwamidSamlAuthenticationHandler} instances.
@@ -53,20 +58,38 @@ public class SwamidSamlAuthenticationHandlerFactory extends SamlAuthenticationHa
   }
 
   /**
-   * Asserts that we require signed assertions ...
+   * Creates the Swamid special response processor.
    */
   @Override
   protected ResponseProcessor createResponseProcessor(final SamlAuthenticationHandlerConfiguration config,
-      final BeanLoader beanLoader, final MetadataProvider metadataProvider) {
+      final SAMLObjectDecrypter decrypter, final MessageReplayChecker messageReplayChecker,
+      final MetadataProvider metadataProvider) {
 
-    if (config.getRequireSignedAssertions() == null) {
-      config.setRequireSignedAssertions(true);
-    }
-    if (config.getRequireSignedAssertions() != null && !config.getRequireSignedAssertions().booleanValue()) {
-      throw new IllegalArgumentException("require-signed-assertions is set to false - this is not allowed for Swamid");
-    }
+    if (SAML_TYPE_SWAMID.equals(config.getSamlType())) {
+      final SwamidResponseProcessor processor = new SwamidResponseProcessor();
+      processor.setDecrypter(decrypter);
+      processor.setMessageReplayChecker(messageReplayChecker);
+      processor.setMetadataResolver(metadataProvider.getMetadataResolver());
+      processor.setRequireEncryptedAssertions(Optional.ofNullable(config.getRequireEncryptedAssertions()).orElse(true));
 
-    return super.createResponseProcessor(config, beanLoader, metadataProvider);
+      final ResponseValidationSettings validationSettings = new ResponseValidationSettings();
+      validationSettings.setAllowedClockSkew(this.getValidationConfig().getAllowedClockSkew());
+      validationSettings.setMaxAgeResponse(this.getValidationConfig().getMaxMessageAge());
+      if (config.getRequireSignedAssertions() != null) {
+        validationSettings.setRequireSignedAssertions(config.getRequireSignedAssertions().booleanValue());
+      }
+      processor.setResponseValidationSettings(validationSettings);
+      try {
+        processor.initialize();
+      }
+      catch (final ComponentInitializationException e) {
+        throw new IllegalArgumentException("Failed to initialize SAML response processor - " + e.getMessage(), e);
+      }
+      return processor;
+    }
+    else {
+      return super.createResponseProcessor(config, decrypter, messageReplayChecker, metadataProvider);
+    }
   }
 
 }
