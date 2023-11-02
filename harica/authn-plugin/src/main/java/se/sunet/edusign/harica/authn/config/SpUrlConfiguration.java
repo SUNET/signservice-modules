@@ -2,8 +2,7 @@ package se.sunet.edusign.harica.authn.config;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
+import jakarta.annotation.Nonnull;
 import lombok.Getter;
 
 /**

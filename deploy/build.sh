@@ -9,6 +9,7 @@ usage() {
     echo
     echo "   -i, --image            Name of image to create (default is edusign-signservice)"
     echo "   -t, --tag              Optional docker tag for image"
+    echo "   -p, --platform         Optional platform parameter value to use when building Docker image"
     echo "   -h, --help             Prints this help"
     echo
 }
@@ -17,6 +18,7 @@ DEPLOY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 IMAGE_NAME=""
 DOCKER_TAG=""
+PLATFORM_PAR=""
 
 while :
 do
@@ -31,6 +33,10 @@ do
       ;;
   -t | --tag)
       DOCKER_TAG="$2"
+      shift 2
+      ;;
+  -p | --platform)
+      PLATFORM_PAR="$2"
       shift 2
       ;;
   --)
@@ -53,6 +59,10 @@ if [ "$IMAGE_NAME" == "" ]; then
     echo "Docker image name not given, defaulting to $IMAGE_NAME" >&1
 fi
 
+if [ "$PLATFORM_PAR" != "" ]; then
+    PLATFORM_PAR="--platform $PLATFORM_PAR" 
+fi
+
 echo
 echo "Building SignService source ..."
 echo
@@ -68,6 +78,6 @@ echo "Building Docker image ${IMAGE_NAME} ..."
 echo
 
 
-docker build -f ${DEPLOY_DIR}/Dockerfile -t ${IMAGE_NAME} ${DEPLOY_DIR}/../signservice-app
+docker build -f ${DEPLOY_DIR}/Dockerfile -t ${IMAGE_NAME} ${PLATFORM_PAR} ${DEPLOY_DIR}/../signservice-app
 
 

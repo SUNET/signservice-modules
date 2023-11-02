@@ -50,6 +50,7 @@ public class TokenValidator {
   private JWSVerifier getVerifier(SignedJWT signedJWT)
       throws TokenValidationException, CertificateEncodingException, NoSuchAlgorithmException, JOSEException {
 
+    @SuppressWarnings("unused")
     JWSHeader header = signedJWT.getHeader();
 
     if (trustedCredential == null || trustedCredential == null) {

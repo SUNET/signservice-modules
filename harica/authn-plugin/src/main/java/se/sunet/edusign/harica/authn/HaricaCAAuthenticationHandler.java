@@ -11,15 +11,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.apache.http.StatusLine;
 import org.apache.http.client.utils.URIBuilder;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import se.sunet.edusign.harica.authn.config.CaConfiguration;
@@ -35,6 +34,9 @@ import se.sunet.edusign.harica.authn.service.dto.CreateUserDetails;
 import se.sunet.edusign.harica.authn.service.token.CaCertificateResponse;
 import se.sunet.edusign.harica.authn.service.token.ResponseParser;
 import se.sunet.edusign.harica.authn.service.token.TokenValidationException;
+import se.sunet.edusign.harica.authn.service.token.TokenValidator;
+import se.sunet.edusign.harica.commons.SerializableCredentials;
+import se.sunet.edusign.harica.commons.impl.PKCS8SerializableCredentials;
 import se.swedenconnect.security.algorithms.AlgorithmRegistry;
 import se.swedenconnect.security.algorithms.SignatureAlgorithm;
 import se.swedenconnect.security.credential.PkiCredential;
@@ -44,15 +46,12 @@ import se.swedenconnect.signservice.authn.AuthenticationErrorCode;
 import se.swedenconnect.signservice.authn.AuthenticationHandler;
 import se.swedenconnect.signservice.authn.AuthenticationResultChoice;
 import se.swedenconnect.signservice.authn.UserAuthenticationException;
-import se.sunet.edusign.harica.authn.service.token.TokenValidator;
 import se.swedenconnect.signservice.context.SignServiceContext;
 import se.swedenconnect.signservice.core.AbstractSignServiceHandler;
 import se.swedenconnect.signservice.core.http.DefaultHttpRedirectAction;
 import se.swedenconnect.signservice.core.http.DefaultHttpResponseAction;
 import se.swedenconnect.signservice.core.http.HttpResponseAction;
 import se.swedenconnect.signservice.core.http.HttpUserRequest;
-import se.sunet.edusign.harica.commons.SerializableCredentials;
-import se.sunet.edusign.harica.commons.impl.PKCS8SerializableCredentials;
 import se.swedenconnect.signservice.protocol.msg.AuthnRequirements;
 import se.swedenconnect.signservice.protocol.msg.SignMessage;
 

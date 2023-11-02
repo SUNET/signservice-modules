@@ -17,8 +17,6 @@ package se.sunet.edusign.harica.authn.config;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.security.KeyStore;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -32,14 +30,11 @@ import se.swedenconnect.signservice.core.config.HandlerConfiguration;
  */
 public class HaricaCAAuthenticationFactoryTest {
 
-
-  private KeyStore keyStore;
-
   public HaricaCAAuthenticationFactoryTest() throws Exception {
     final KeyStoreFactoryBean factory = new KeyStoreFactoryBean(
       new ClassPathResource("keys.jks"), "secret".toCharArray());
     factory.afterPropertiesSet();
-    this.keyStore = factory.getObject();
+    factory.getObject();
   }
 
   @Test
@@ -68,6 +63,7 @@ public class HaricaCAAuthenticationFactoryTest {
   }
 
 
+  @SuppressWarnings("unused")
   private static class HaricaCAAuthenticationFactory2 extends HaricaCAAuthenticationFactory {
 
     public Class<AuthenticationHandler> handler() {

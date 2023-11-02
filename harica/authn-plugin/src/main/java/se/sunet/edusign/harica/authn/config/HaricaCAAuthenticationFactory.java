@@ -6,9 +6,6 @@ import java.security.interfaces.ECPrivateKey;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -28,6 +25,8 @@ import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import se.sunet.edusign.harica.authn.HaricaCAAuthenticationHandler;
 import se.sunet.edusign.harica.authn.service.BackChannelRequestSigner;
 import se.sunet.edusign.harica.authn.service.CARequestConnector;

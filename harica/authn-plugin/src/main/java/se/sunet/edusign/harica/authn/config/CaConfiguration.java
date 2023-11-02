@@ -4,8 +4,7 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
+import jakarta.annotation.Nonnull;
 import lombok.Getter;
 
 /**

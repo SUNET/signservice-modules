@@ -29,6 +29,15 @@ is a documented configuration file for the test installation of this application
 
 The Harica CA setup has its own configuration documentation [here](harica/README.md).
 
+**Upgrade notice:**
+
+The 1.2.0 version has been upgraded to use Spring Boot 3. There have been changes concerning
+Redis configuration between Spring Boot 2 and Spring Boot 3.
+
+`spring.redis.*` -> `spring.data.redis.*`
+
+Make sure to upgrade your configuration to reflect this.
+
 
 ## Building and installing
 
@@ -39,7 +48,6 @@ To run the application use a script looking something like:
 ```
 #!/bin/bash
 
-REDIS_PORT=6379
 SIGNSERVICE_HTTPS_PORT=9070
 
 if [ "$SIGNSERVICE_DIR" == "" ]; then

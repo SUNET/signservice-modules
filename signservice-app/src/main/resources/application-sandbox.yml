@@ -47,15 +47,16 @@ spring:
     redis:
       namespace: signservice:session
       flush-mode: immediate
-      save-mode: on-set-attribute
-  redis:    
-    #host: localhost
-    port: 6379
-    #password: secret
-
+      save-mode: on-set-attribute    
+  data:
+    redis:
+      port: 6379
+      #host: localhost
+      #password: secret
+      
 #
 # The SignService configuration
-#        
+#
 signservice:
   domain: sig.idsec.se
   base-url: https://${signservice.domain}${server.servlet.context-path}

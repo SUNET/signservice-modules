@@ -104,22 +104,25 @@ public class SwamidResponseProcessor extends ResponseProcessorImpl {
       if (!token.isSigned()) {
         if (responseSigned) {
           if (assertionSignatureRequired) {
-            log.warn("Assertion was required to be signed, but was not. Will be allowed anyway since response was signed");
+            log.warn(
+                "Assertion was required to be signed, but was not. Will be allowed anyway since response was signed");
           }
           else {
-            log.debug("Assertion was not required to be signed, and was not signed. Skipping further signature evaluation");
+            log.debug(
+                "Assertion was not required to be signed, and was not signed. Skipping further signature evaluation");
           }
           return ValidationResult.VALID;
         }
         else {
-          context.setValidationFailureMessage("Assertion was not signed, nor was SAML response - invalid message");
+          context.getValidationFailureMessages()
+              .add("Assertion was not signed, nor was SAML response - invalid message");
           return ValidationResult.INVALID;
         }
       }
       if (trustEngine == null) {
         log.warn("Signature validation was necessary, but no signature trust engine was available");
-        context.setValidationFailureMessage(String.format(
-          "%s signature could not be evaluated due to internal error", this.getObjectName()));
+        context.getValidationFailureMessages().add(
+            String.format("%s signature could not be evaluated due to internal error", this.getObjectName()));
         return ValidationResult.INDETERMINATE;
       }
 
