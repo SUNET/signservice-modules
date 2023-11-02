@@ -1,7 +1,6 @@
 package se.sunet.edusign.harica.certificate.config;
 
-import javax.annotation.Nonnull;
-
+import jakarta.annotation.Nonnull;
 import se.sunet.edusign.harica.certificate.HaricaCAKeyAndCertificateHandler;
 import se.swedenconnect.signservice.certificate.base.config.AbstractKeyAndCertificateHandlerConfiguration;
 

@@ -4,8 +4,7 @@ import java.security.KeyException;
 import java.security.cert.CertificateException;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
+import jakarta.annotation.Nonnull;
 import se.sunet.edusign.harica.commons.SerializableCredentials;
 import se.swedenconnect.security.credential.BasicCredential;
 import se.swedenconnect.security.credential.PkiCredential;

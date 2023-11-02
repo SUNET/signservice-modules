@@ -9,7 +9,7 @@
   <parent>
     <groupId>se.sunet.edusign</groupId>
     <artifactId>edusign-signservice-parent</artifactId>
-    <version>1.1.3</version>
+    <version>1.2.0</version>
   </parent>
 
   <name>Sunet :: eduSign :: SAML Plugin</name>
@@ -54,20 +54,6 @@
 
   <properties>
   </properties>
-
-  <dependencyManagement>
-
-    <dependencies>
-
-      <dependency>
-        <groupId>org.bouncycastle</groupId>
-        <artifactId>bcprov-jdk15on</artifactId>
-        <version>1.70</version>
-      </dependency>
-
-    </dependencies>
-
-  </dependencyManagement>
 
   <dependencies>
 

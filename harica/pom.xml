@@ -10,7 +10,7 @@
   <parent>
     <groupId>se.sunet.edusign</groupId>
     <artifactId>edusign-signservice-parent</artifactId>
-    <version>1.1.3</version>
+    <version>1.2.0</version>
   </parent>
 
   <name>Sunet :: eduSign :: Harica :: Plugins parent</name>
@@ -57,34 +57,25 @@
   </properties>
   
   <modules>
-    <module>authn-plugin</module>
-    <module>cert-plugin</module>
     <module>authn-commons</module>
+    <module>authn-plugin</module>
+    <module>cert-plugin</module>    
   </modules>
 
   <dependencyManagement>
+    
     <dependencies>
+      
       <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter</artifactId>
+        <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter</artifactId>
-        <version>5.9.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>3.24.2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.36</version>
-      </dependency>
+            
     </dependencies>
+    
   </dependencyManagement>
 
   <dependencies>
@@ -95,16 +86,19 @@
       <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    
   </dependencies>
 
 </project>

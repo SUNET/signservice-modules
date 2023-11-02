@@ -31,8 +31,8 @@ docker run -d --name edusign-signservice --restart=always \
   -p ${SIGNSERVICE_HTTPS_PORT}:8443 \
   -e SPRING_CONFIG_LOCATION=${SS_HOME}/config/application.yml \
   -e SIGNSERVICE_HOME=${SS_HOME} \
-  -e SPRING_REDIS_HOST=${REDIS_CONTAINER_IP} \
-  -e SPRING_REDIS_PORT=${REDIS_PORT} \
+  -e SPRING_DATA_REDIS_HOST=${REDIS_CONTAINER_IP} \
+  -e SPRING_DATA_REDIS_PORT=${REDIS_PORT} \
   -e SPRING_SESSION_STORE_TYPE=redis \
   -e SPRING_SESSION_REDIS_NAMESPACE=signservice:session \
   -e SPRING_SESSION_REDIS_FLUSH_MODE="immediate" \

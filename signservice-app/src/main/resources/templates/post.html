@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"> 
-<head th:include="fragments/base :: headerFragment">
-  <title id="pageTitle" th:inline="text">[[#{signservice.msg.title}]]</title>
+<head th:insert="~{fragments/base :: headerFragment}">
 </head>
 <body onload="document.forms[0].submit()">
   <form method="POST" action="#" th:action="${action}">
@@ -12,7 +11,7 @@
     
     <noscript>
     
-      <div th:replace="fragments/header :: logotype"></div>
+      <div th:replace="~{fragments/header :: logotype}"></div>
   
       <div class="container main">
     
@@ -38,7 +37,7 @@
             
           </div>
           
-          <div th:replace="fragments/footer :: copyright"></div>
+          <div th:replace="~{fragments/footer :: copyright}"></div>
           
         </div>
       </div>

@@ -32,6 +32,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.util.encoders.Base64;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -48,6 +49,7 @@ import se.sunet.edusign.harica.authn.config.HaricaCAAuthenticationHandlerConfigu
  * Spring @Configuration class for providing the {@link HaricaCAAuthenticationHandler} as a bean
  */
 @Slf4j
+@ConditionalOnProperty(name = "harica-authn.enabled", havingValue = "true", matchIfMissing = false)
 @Configuration
 public class CAAuthnHandlerBeanConfiguration {
 

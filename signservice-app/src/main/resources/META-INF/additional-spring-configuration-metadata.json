@@ -8,5 +8,10 @@
     "name": "cfgdir",
     "type": "java.lang.String",
     "description": "Where to find configuration objects"
+  },
+  {
+    "name": "spring.session.store-type",
+    "type": "java.lang.String",
+    "description": "Determines the Spring session store type (none, redis, ...)"
   }
 ]}

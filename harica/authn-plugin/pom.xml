@@ -9,7 +9,7 @@
   <parent>
     <groupId>se.sunet.edusign.harica</groupId>
     <artifactId>edusign-harica-parent</artifactId>
-    <version>1.1.3</version>
+    <version>1.2.0</version>
   </parent>
 
   <name>Sunet :: eduSign :: Harica:: Authn Plugin</name>
@@ -62,33 +62,35 @@
 
   </repositories>
 
-  <properties>
-  </properties>
-  
-  <dependencyManagement>
-  
-    <dependencies>
-
-    </dependencies>
-    
-  </dependencyManagement>  
-
   <dependencies>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
+      <artifactId>spring-boot</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>    
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>    
+    
     <dependency>
       <groupId>se.swedenconnect.signservice</groupId>
       <artifactId>signservice-authn-base</artifactId>
-      <version>1.0.2</version>
     </dependency>
+    
     <dependency>
       <groupId>se.swedenconnect.ca</groupId>
       <artifactId>cmc</artifactId>
       <version>1.3.5</version>
     </dependency>
+    
     <dependency>
       <groupId>se.sunet.edusign.harica</groupId>
       <artifactId>edusign-harica-authn-commons</artifactId>
@@ -104,7 +106,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.5.0</version>
         <configuration>
           <doctitle>SignService Harica CA Authentication Handler - ${project.version}</doctitle>
           <windowtitle>SignService Harica CA Authentication Handler - ${project.version}</windowtitle>
