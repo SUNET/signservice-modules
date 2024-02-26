@@ -5,7 +5,7 @@
 
   <groupId>se.sunet.edusign</groupId>
   <artifactId>edusign-signservice-parent</artifactId>
-  <version>1.2.1</version>
+  <version>1.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Sunet :: eduSign</name>
@@ -92,6 +92,33 @@
       <artifactId>lombok</artifactId>
     </dependency>
 
+    <!-- We use JUnit 5 and Mockito for our tests -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>5.5.0</version>
+      <scope>test</scope>
+    </dependency>    
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.24.2</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>  
 
   <build>
@@ -152,6 +179,7 @@
 
   <modules>
     <module>saml-plugin</module>
+    <module>keycert-plugin</module>
     <module>harica</module>
     <module>signservice-app</module>
   </modules>
