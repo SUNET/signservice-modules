@@ -127,6 +127,7 @@ signservice:
     cert:
       bean-name: signservice.RemoteCa
       cmc:
+        factory-class: se.sunet.edusign.certificate.EdusignCMCKeyAndCertificateHandlerFactory
         key-provider-ref: signservice.DefaultKeyProvider
         cmc-client-credential:
           props:
