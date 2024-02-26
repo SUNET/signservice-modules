@@ -256,109 +256,117 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
 
     context.remove(MATCHED_EDU_PERSON_ASSURANCE_LEVELS_CONTEXT_KEY);
 
-    if (!matchedLevels.isEmpty()) {
-      if (Objects.equals(EduSignAssuranceLevels.SWAMID_AL3, matchedLevels.get(0))) {
-        if (!Objects.equals(REFEDS_MFA_AUTHN_CONTEXT_URI, result.getAuthnContextClassUri())) {
-          log.warn("Invalid assertion - contains {} but AuthnContextClass {} is missing",
-              EduSignAssuranceLevels.SWAMID_AL3, REFEDS_MFA_AUTHN_CONTEXT_URI);
+    if (!matchedLevels.isEmpty() && Objects.equals(EduSignAssuranceLevels.SWAMID_AL3, matchedLevels.get(0))) {
+      if (!Objects.equals(REFEDS_MFA_AUTHN_CONTEXT_URI, result.getAuthnContextClassUri())) {
+        log.warn("Invalid assertion - contains {} but AuthnContextClass {} is missing",
+            EduSignAssuranceLevels.SWAMID_AL3, REFEDS_MFA_AUTHN_CONTEXT_URI);
 
-          // We are forgiving, but need to downgrade the matched AL-level.
-          //
-          if (matchedLevels.size() == 1) {
-            final String msg =
-                String.format("Requirement for attribute '%s' was %s but assertion does not include MFA signalling",
-                    EDU_PERSON_ASSURANCE_NAME, EduSignAssuranceLevels.SWAMID_AL3);
-            log.info("{}: {}", context.getId(), msg);
-            throw new UserAuthenticationException(AuthenticationErrorCode.MISMATCHING_IDENTITY_ATTRIBUTES, msg);
-          }
-          // Else remove AL3 from the array.
-          // Note: The request contained multiple requested eduPersonAssurance levels, and we still have a match
-          // so this is ok ...
-          //
-          matchedLevels.remove(0);
+        // We are forgiving, but need to downgrade the matched AL-level.
+        //
+        if (matchedLevels.size() == 1) {
+          final String msg =
+              String.format("Requirement for attribute '%s' was %s but assertion does not include MFA signalling",
+                  EDU_PERSON_ASSURANCE_NAME, EduSignAssuranceLevels.SWAMID_AL3);
+          log.info("{}: {}", context.getId(), msg);
+          throw new UserAuthenticationException(AuthenticationErrorCode.MISMATCHING_IDENTITY_ATTRIBUTES, msg);
         }
+        // Else remove AL3 from the array.
+        // Note: The request contained multiple requested eduPersonAssurance levels, and we still have a match
+        // so this is ok ...
+        //
+        matchedLevels.remove(0);
       }
+    }
 
-      // We sort the eduPersonAssurance values so that our matching values are placed first
-      // in the list. This is essential since the key-and-cert handler assumes single-valued attributes.
-      //
-      final IdentityAttribute<?> eduPersonAssurance = assertion.getIdentityAttributes().stream()
-          .filter(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()))
-          .findFirst()
-          .orElse(null);
+    // Next, we sort the eduPersonAssurance values so that:
+    // - If matching values were specified, these are placed first, or,
+    // - if no matching values were specified, the highest levels are placed first.
+    // This is essential since the key-and-cert handler assumes single-valued attributes.
+    //
+    final IdentityAttribute<?> eduPersonAssurance = assertion.getIdentityAttributes().stream()
+        .filter(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()))
+        .findFirst()
+        .orElse(null);
 
-      if (eduPersonAssurance != null) {
+    final List<String> sortedEduPersonAssuranceValues;
 
-        final List<String> sortedEduPersonAssuranceValues = new ArrayList<>();
+    if (eduPersonAssurance != null) {
+
+      if (!matchedLevels.isEmpty()) {
+        sortedEduPersonAssuranceValues = new ArrayList<>();
         sortedEduPersonAssuranceValues.addAll(matchedLevels);
 
         eduPersonAssurance.getValues().stream()
             .filter(v -> !matchedLevels.contains(v))
             .map(String.class::cast)
             .forEach(v -> sortedEduPersonAssuranceValues.add(v));
-
-        final IdentityAttribute<?> updatedEduPersonAssurance =
-            new StringSamlIdentityAttribute(
-                EDU_PERSON_ASSURANCE_NAME, eduPersonAssurance.getFriendlyName(), sortedEduPersonAssuranceValues);
-
-        final List<IdentityAttribute<?>> updatedAttributes = new ArrayList<>(assertion.getIdentityAttributes());
-        updatedAttributes.removeIf(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()));
-        updatedAttributes.add(updatedEduPersonAssurance);
-        assertion.setIdentityAttributes(updatedAttributes);
       }
+      else {
+        sortedEduPersonAssuranceValues = eduPersonAssurance.getValues().stream()
+            .map(String.class::cast)
+            .sorted(EduSignAssuranceLevels.uriComparator)
+            .toList();
+      }
+
+      final IdentityAttribute<?> updatedEduPersonAssurance =
+          new StringSamlIdentityAttribute(
+              EDU_PERSON_ASSURANCE_NAME, eduPersonAssurance.getFriendlyName(), sortedEduPersonAssuranceValues);
+
+      final List<IdentityAttribute<?>> updatedAttributes = new ArrayList<>(assertion.getIdentityAttributes());
+      updatedAttributes.removeIf(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()));
+      updatedAttributes.add(updatedEduPersonAssurance);
+      assertion.setIdentityAttributes(updatedAttributes);
+    }
+    else {
+      sortedEduPersonAssuranceValues = null;
     }
 
     // OK, finally we assigned the custom authentication context class URI that is to be used
     // in the resulting authentication certificate ...
     //
     final boolean refedsMfa = Objects.equals(REFEDS_MFA_AUTHN_CONTEXT_URI, result.getAuthnContextClassUri());
-    final List<String> eduPersonAssuranceValues = assertion.getIdentityAttributes().stream()
-        .filter(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()))
-        .map(a -> a.getValues().stream().map(String.class::cast).toList())
-        .findFirst()
-        .orElseGet(() -> Collections.emptyList());
 
-    if (eduPersonAssuranceValues.isEmpty()) {
+    if (sortedEduPersonAssuranceValues == null) {
       log.warn("No eduPersonAssurance attribute available");
     }
     else {
 
       // Just warn for a special case before we start ...
-      if (!refedsMfa && eduPersonAssuranceValues.contains(EduSignAssuranceLevels.SWAMID_AL3)) {
+      if (!refedsMfa && sortedEduPersonAssuranceValues.contains(EduSignAssuranceLevels.SWAMID_AL3)) {
         log.warn("Invalid assertion - No MFA signalled but contains AL3 - AL3 will be ignored");
       }
 
       final String customAuthnContextUri;
-      if (refedsMfa && eduPersonAssuranceValues.contains(EduSignAssuranceLevels.SWAMID_AL3)) {
+      if (refedsMfa && sortedEduPersonAssuranceValues.contains(EduSignAssuranceLevels.SWAMID_AL3)) {
         customAuthnContextUri = EduSignAssuranceLevels.SWAMID_AL3;
       }
-      else if (eduPersonAssuranceValues.contains(EduSignAssuranceLevels.REFEDS_HIGH)) {
+      else if (sortedEduPersonAssuranceValues.contains(EduSignAssuranceLevels.REFEDS_HIGH)) {
         customAuthnContextUri = refedsMfa
             ? EduSignAssuranceLevels.CUSTOM_REFEDS_HIGH_MFA
             : EduSignAssuranceLevels.REFEDS_HIGH;
       }
-      else if (eduPersonAssuranceValues.contains(EduSignAssuranceLevels.SWAMID_AL2)) {
+      else if (sortedEduPersonAssuranceValues.contains(EduSignAssuranceLevels.SWAMID_AL2)) {
         customAuthnContextUri = refedsMfa
             ? EduSignAssuranceLevels.CUSTOM_SWAMID_AL2_MFA
             : EduSignAssuranceLevels.SWAMID_AL2;
       }
-      else if (eduPersonAssuranceValues.contains(EduSignAssuranceLevels.REFEDS_MEDIUM)) {
+      else if (sortedEduPersonAssuranceValues.contains(EduSignAssuranceLevels.REFEDS_MEDIUM)) {
         customAuthnContextUri = refedsMfa
             ? EduSignAssuranceLevels.CUSTOM_REFEDS_MEDIUM_MFA
             : EduSignAssuranceLevels.REFEDS_MEDIUM;
       }
-      else if (eduPersonAssuranceValues.contains(EduSignAssuranceLevels.SWAMID_AL1)) {
+      else if (sortedEduPersonAssuranceValues.contains(EduSignAssuranceLevels.SWAMID_AL1)) {
         customAuthnContextUri = refedsMfa
             ? EduSignAssuranceLevels.CUSTOM_SWAMID_AL1_MFA
             : EduSignAssuranceLevels.SWAMID_AL1;
       }
-      else if (eduPersonAssuranceValues.contains(EduSignAssuranceLevels.REFEDS_LOW)) {
+      else if (sortedEduPersonAssuranceValues.contains(EduSignAssuranceLevels.REFEDS_LOW)) {
         customAuthnContextUri = refedsMfa
             ? EduSignAssuranceLevels.CUSTOM_REFEDS_LOW_MFA
             : EduSignAssuranceLevels.REFEDS_LOW;
       }
       else {
-        log.warn("No valid assurance level found in eduPersonAssurance attribute - {}", eduPersonAssuranceValues);
+        log.warn("No valid assurance level found in eduPersonAssurance attribute - {}", sortedEduPersonAssuranceValues);
         customAuthnContextUri = null;
       }
 
