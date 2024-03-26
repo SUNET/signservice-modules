@@ -9,7 +9,7 @@
   <parent>
     <groupId>se.sunet.edusign</groupId>
     <artifactId>edusign-signservice-parent</artifactId>
-    <version>1.3.1-SNAPSHOT</version>
+    <version>1.3.1</version>
   </parent>  
 
   <name>Sunet :: eduSign :: SignService Application</name>
