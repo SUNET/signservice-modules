@@ -29,7 +29,7 @@ is a documented configuration file for the test installation of this application
 
 The Harica CA setup has its own configuration documentation [here](harica/README.md).
 
-**Upgrade notice:**
+**Upgrade notice for 1.2.+:**
 
 The 1.2.0 version has been upgraded to use Spring Boot 3. There have been changes concerning
 Redis configuration between Spring Boot 2 and Spring Boot 3.
@@ -38,6 +38,13 @@ Redis configuration between Spring Boot 2 and Spring Boot 3.
 
 Make sure to upgrade your configuration to reflect this.
 
+**Upgrade notice for 1.3.+:**
+
+For 1.3.X, there is one setting that needs to be changed: `signservice.common-beans.cert.cmc.factory-class` must be set to `se.sunet.edusign.certificate.EdusignCMCKeyAndCertificateHandlerFactory`.
+
+For reference, check [application-sandbox.yml](src/main/resources/application-sandbox.yml).
+
+Make sure to upgrade your configuration to reflect this.
 
 ## Building and installing
 
