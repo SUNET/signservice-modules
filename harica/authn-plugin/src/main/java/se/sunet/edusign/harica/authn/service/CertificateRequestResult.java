@@ -1,11 +1,11 @@
 package se.sunet.edusign.harica.authn.service;
 
-import org.apache.http.StatusLine;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.hc.core5.http.message.StatusLine;
 
 @AllArgsConstructor
 @NoArgsConstructor

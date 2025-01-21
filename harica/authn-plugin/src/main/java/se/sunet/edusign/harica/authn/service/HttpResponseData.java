@@ -1,8 +1,8 @@
 package se.sunet.edusign.harica.authn.service;
 
-import org.apache.http.StatusLine;
 
 import lombok.Getter;
+import org.apache.hc.core5.http.message.StatusLine;
 
 /**
  * HttpResponseData

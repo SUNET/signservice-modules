@@ -1,26 +1,13 @@
 package se.sunet.edusign.harica.authn;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import org.apache.http.StatusLine;
-import org.apache.http.client.utils.URIBuilder;
-
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.core5.http.message.StatusLine;
+import org.apache.hc.core5.net.URIBuilder;
 import se.sunet.edusign.harica.authn.config.CaConfiguration;
 import se.sunet.edusign.harica.authn.config.SpUrlConfiguration;
 import se.sunet.edusign.harica.authn.result.CAAuthResult;
@@ -54,6 +41,17 @@ import se.swedenconnect.signservice.core.http.HttpResponseAction;
 import se.swedenconnect.signservice.core.http.HttpUserRequest;
 import se.swedenconnect.signservice.protocol.msg.AuthnRequirements;
 import se.swedenconnect.signservice.protocol.msg.SignMessage;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Handler for performing user authentication and certificate issuance using the Harica CA API
