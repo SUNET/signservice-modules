@@ -1,6 +1,5 @@
 package se.sunet.edusign.harica.authn.service;
 
-import org.apache.http.StatusLine;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CertificateRequestResult {
 
-  StatusLine statusLine;
+  int responseCode;
   String message;
 
 }

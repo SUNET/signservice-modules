@@ -1,38 +1,27 @@
 package se.sunet.edusign.harica.authn.config;
 
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.interfaces.ECPrivateKey;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.TrustAllStrategy;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import se.sunet.edusign.harica.authn.HaricaCAAuthenticationHandler;
-import se.sunet.edusign.harica.authn.service.BackChannelRequestSigner;
-import se.sunet.edusign.harica.authn.service.CARequestConnector;
-import se.sunet.edusign.harica.authn.service.CertificateRequestFactory;
-import se.sunet.edusign.harica.authn.service.CertificateRequestService;
-import se.sunet.edusign.harica.authn.service.UserRegistrationService;
+import se.sunet.edusign.harica.authn.service.*;
 import se.sunet.edusign.harica.authn.service.token.ResponseParser;
 import se.sunet.edusign.harica.authn.service.token.TokenCredential;
 import se.sunet.edusign.harica.authn.service.token.TokenValidator;
@@ -43,6 +32,12 @@ import se.swedenconnect.signservice.core.config.AbstractHandlerFactory;
 import se.swedenconnect.signservice.core.config.BeanLoader;
 import se.swedenconnect.signservice.core.config.HandlerConfiguration;
 
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.interfaces.ECPrivateKey;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * Base class for factories creating Harica CA authentication handlers.
  */
@@ -51,17 +46,17 @@ public class HaricaCAAuthenticationFactory extends AbstractHandlerFactory<Authen
   /** {@inheritDoc} */
   @Override
   protected AuthenticationHandler createHandler(
-    @Nonnull final HandlerConfiguration<AuthenticationHandler> configuration, @Nullable final BeanLoader beanLoader)
-    throws IllegalArgumentException {
+      @Nonnull final HandlerConfiguration<AuthenticationHandler> configuration, @Nullable final BeanLoader beanLoader)
+      throws IllegalArgumentException {
 
     Objects.requireNonNull(configuration, "Missing configuration for creating AuthenticationHandler instances");
 
     if (!HaricaCAAuthenticationHandlerConfiguration.class.isInstance(configuration)) {
       throw new IllegalArgumentException(
-        "Unknown configuration object supplied - " + configuration.getClass().getSimpleName());
+          "Unknown configuration object supplied - " + configuration.getClass().getSimpleName());
     }
     final HaricaCAAuthenticationHandlerConfiguration conf =
-      HaricaCAAuthenticationHandlerConfiguration.class.cast(configuration);
+        HaricaCAAuthenticationHandlerConfiguration.class.cast(configuration);
 
     // Create the handler
     //
@@ -77,30 +72,31 @@ public class HaricaCAAuthenticationFactory extends AbstractHandlerFactory<Authen
 
     try {
       CARequestConnector caRequestConnector = new CARequestConnector(
-        getHttpClient(conf.getHttpProxyConfiguration()), conf.getConnectTimeout(), conf.getReadTimeout());
+          getHttpClient(conf.getHttpProxyConfiguration()), conf.getConnectTimeout(), conf.getReadTimeout());
 
       boolean ecSigner = conf.getRequestSigningAlgorithm().getName().startsWith("ES");
       JWSSigner signer = ecSigner
-        ? new ECDSASigner((ECPrivateKey) conf.getRequestSigningCredential())
-        : new RSASSASigner(conf.getRequestSigningCredential());
+          ? new ECDSASigner((ECPrivateKey) conf.getRequestSigningCredential())
+          : new RSASSASigner(conf.getRequestSigningCredential());
 
       BackChannelRequestSigner backChannelRequestSigner = new BackChannelRequestSigner(signer,
-        conf.requestSigningAlgorithm);
+          conf.requestSigningAlgorithm);
 
       TokenCredential trustedCredential = new TokenCredential(conf.getTrustedCaTokenVerificationKey());
 
-      X509CertificateHolder caCertHolder = new JcaX509CertificateHolder(conf.getCaConfiguration().getCaCertificateChain().get(0));
+      X509CertificateHolder caCertHolder =
+          new JcaX509CertificateHolder(conf.getCaConfiguration().getCaCertificateChain().get(0));
 
       return new HaricaCAAuthenticationHandler(
-        conf.getSpUrlConfiguration(),
-        conf.getCaConfiguration(),
-        new UserRegistrationService(caRequestConnector, backChannelRequestSigner, conf.getCaConfiguration()),
-        new TokenValidator(trustedCredential),
-        new ResponseParser(new ObjectMapper(), CertificateFactory.getInstance("X.509")),
-        new CertificateRequestService(caRequestConnector, backChannelRequestSigner, conf.getCaConfiguration()),
-        new InMemoryPkiCredentialContainer("BC"),
-        new CertificateRequestFactory(caCertHolder, List.of("http://example.com/crl"), "http://example.com/ocsp"),
-        AlgorithmRegistrySingleton.getInstance()
+          conf.getSpUrlConfiguration(),
+          conf.getCaConfiguration(),
+          new UserRegistrationService(caRequestConnector, backChannelRequestSigner, conf.getCaConfiguration()),
+          new TokenValidator(trustedCredential),
+          new ResponseParser(new ObjectMapper(), CertificateFactory.getInstance("X.509")),
+          new CertificateRequestService(caRequestConnector, backChannelRequestSigner, conf.getCaConfiguration()),
+          new InMemoryPkiCredentialContainer("BC"),
+          new CertificateRequestFactory(caCertHolder, List.of("http://example.com/crl"), "http://example.com/ocsp"),
+          AlgorithmRegistrySingleton.getInstance()
       );
     }
     catch (JOSEException | CertificateException e) {
@@ -122,15 +118,17 @@ public class HaricaCAAuthenticationFactory extends AbstractHandlerFactory<Authen
         final HttpHost proxy = new HttpHost(proxyConfig.getHost(), proxyConfig.getPort());
         builder.setProxy(proxy);
         if (proxyConfig.getUserName() != null) {
-          CredentialsProvider credentialsPovider = new BasicCredentialsProvider();
+          final BasicCredentialsProvider credentialsPovider = new BasicCredentialsProvider();
           credentialsPovider.setCredentials(new AuthScope(proxy), new UsernamePasswordCredentials(
-            proxyConfig.getUserName(), proxyConfig.getPassword()));
+              proxyConfig.getUserName(), proxyConfig.getPassword().toCharArray()));
           builder.setDefaultCredentialsProvider(credentialsPovider);
         }
       }
-      return builder
-        .setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
-        .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+      return builder.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+          .setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
+            .setSslContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
+            .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+            .build()).build())
         .build();
     }
     catch (final Exception e) {

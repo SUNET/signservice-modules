@@ -1,17 +1,18 @@
 package se.sunet.edusign.harica.authn.service;
 
-import java.io.IOException;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
-
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.IOUtils;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.util.Timeout;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Connector for sending backend requests to the CA service
@@ -30,18 +31,17 @@ public class CARequestConnector {
   public HttpResponseData postRequest(String url, byte[] payload) throws IOException {
     HttpPost request = new HttpPost(url);
     request.setConfig(RequestConfig.custom()
-      .setConnectTimeout(connectTimeout)
-      .setConnectionRequestTimeout(connectTimeout)
-      .setSocketTimeout(readTimeout)
-      .build());
+        .setConnectionRequestTimeout(this.connectTimeout, TimeUnit.MILLISECONDS)
+        .setResponseTimeout(this.readTimeout, TimeUnit.MILLISECONDS)
+        .build());
 
     //request.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
     request.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-    request.setEntity(new ByteArrayEntity(payload));
+    request.setEntity(new ByteArrayEntity(payload, ContentType.APPLICATION_JSON));
     CloseableHttpResponse response = httpClient.execute(request);
     byte[] data = IOUtils.toByteArray(response.getEntity().getContent());
     response.close();
-    return new HttpResponseData(response.getStatusLine(), data);
+    return new HttpResponseData(response.getCode(), data);
   }
 
 }
