@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.hc.core5.http.message.StatusLine;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +12,7 @@ import org.apache.hc.core5.http.message.StatusLine;
 @Builder
 public class CertificateRequestResult {
 
-  StatusLine statusLine;
+  int responseCode;
   String message;
 
 }

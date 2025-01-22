@@ -10,12 +10,12 @@ import org.apache.hc.core5.http.message.StatusLine;
 @Getter
 public class HttpResponseData {
 
-  public HttpResponseData(StatusLine statusLine, byte[] data) {
-    this.statusLine = statusLine;
+  public HttpResponseData(int responseCode, byte[] data) {
+    this.responseCode = responseCode;
     this.data = data;
   }
 
-  private StatusLine statusLine;
+  private int responseCode;
   private byte[] data;
 
 }

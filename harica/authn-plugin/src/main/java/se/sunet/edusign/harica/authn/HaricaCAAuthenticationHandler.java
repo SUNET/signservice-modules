@@ -153,10 +153,9 @@ public class HaricaCAAuthenticationHandler extends AbstractSignServiceHandler
       CertificateRequestResult requestResult = certificateRequestService.registerCertificateRequest(
         caCertificateRequest);
       // Get result
-      StatusLine status = requestResult.getStatusLine();
       String message = requestResult.getMessage();
 
-      if (status.getStatusCode() != 200) {
+      if (requestResult.getResponseCode() != 200) {
         String statusMessage = message == null
           ? "Failed to register certificate request"
           : message;

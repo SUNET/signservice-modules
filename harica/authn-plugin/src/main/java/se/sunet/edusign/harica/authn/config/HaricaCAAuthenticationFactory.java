@@ -8,23 +8,20 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.hc.client5.http.auth.AuthScope;
-import org.apache.hc.client5.http.auth.CredentialsProvider;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import se.sunet.edusign.harica.authn.HaricaCAAuthenticationHandler;
-import se.sunet.edusign.harica.authn.service.BackChannelRequestSigner;
-import se.sunet.edusign.harica.authn.service.CARequestConnector;
-import se.sunet.edusign.harica.authn.service.CertificateRequestFactory;
-import se.sunet.edusign.harica.authn.service.CertificateRequestService;
-import se.sunet.edusign.harica.authn.service.UserRegistrationService;
+import se.sunet.edusign.harica.authn.service.*;
 import se.sunet.edusign.harica.authn.service.token.ResponseParser;
 import se.sunet.edusign.harica.authn.service.token.TokenCredential;
 import se.sunet.edusign.harica.authn.service.token.TokenValidator;
@@ -127,10 +124,12 @@ public class HaricaCAAuthenticationFactory extends AbstractHandlerFactory<Authen
           builder.setDefaultCredentialsProvider(credentialsPovider);
         }
       }
-      return builder
-          .setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
-          .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-          .build();
+      return builder.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+          .setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
+            .setSslContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
+            .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+            .build()).build())
+        .build();
     }
     catch (final Exception e) {
       throw new IllegalArgumentException("Failed to initialize HttpClient", e);

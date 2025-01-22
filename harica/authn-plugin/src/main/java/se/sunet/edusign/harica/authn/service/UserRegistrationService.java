@@ -30,11 +30,11 @@ public class UserRegistrationService {
     byte[] userRequestToken = backChannelRequestSigner.signPayload(OBJECT_MAPPER.writeValueAsBytes(getUserRequest));
 
     HttpResponseData getUserResponse = caRequestConnector.postRequest(caConfiguration.getGetUserUrl(), userRequestToken);
-    if (getUserResponse.getStatusLine().getStatusCode() == 200) {
+    if (getUserResponse.getResponseCode() == 200) {
       return UserRegistrationResult.builder()
         .preExistingUser(true)
         .newRegistration(false)
-        .statusLine(getUserResponse.getStatusLine())
+        .responseCode(getUserResponse.getResponseCode())
         .message(caRequestConnector.getStringResponse(getUserResponse))
         .build();
     }
@@ -45,8 +45,8 @@ public class UserRegistrationService {
 
     UserRegistrationResult registrationResult = UserRegistrationResult.builder()
       .preExistingUser(false)
-      .newRegistration(registerUserResponse.getStatusLine().getStatusCode() == 200)
-      .statusLine(registerUserResponse.getStatusLine())
+      .newRegistration(registerUserResponse.getResponseCode() == 200)
+      .responseCode(registerUserResponse.getResponseCode())
       .message(caRequestConnector.getStringResponse(registerUserResponse))
       .build();
 

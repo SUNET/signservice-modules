@@ -1,7 +1,5 @@
 package se.sunet.edusign.harica.authn.service;
 
-import org.apache.http.StatusLine;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +16,7 @@ public class UserRegistrationResult {
 
   boolean preExistingUser;
   boolean newRegistration;
-  StatusLine statusLine;
+  int responseCode;
   String message;
 
 }

@@ -29,7 +29,7 @@ public class CertificateRequestService {
     HttpResponseData registerCsrResponse = caRequestConnector.postRequest(caConfiguration.getRegisterCsrUrl(), registerUserToken);
 
     CertificateRequestResult result = CertificateRequestResult.builder()
-      .statusLine(registerCsrResponse.getStatusLine())
+      .responseCode(registerCsrResponse.getResponseCode())
       .message(caRequestConnector.getStringResponse(registerCsrResponse))
       .build();
 
