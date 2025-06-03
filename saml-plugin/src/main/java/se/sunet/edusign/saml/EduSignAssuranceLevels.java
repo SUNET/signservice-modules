@@ -45,9 +45,7 @@ public class EduSignAssuranceLevels {
   /**
    * Comparator for comparing assurance level URI:s.
    */
-  public static Comparator<String> uriComparator = (u1, u2) -> {
-    return Integer.compare(getComparatorOrder(u1), getComparatorOrder(u2));
-  };
+  public static Comparator<String> uriComparator = Comparator.comparingInt(EduSignAssuranceLevels::getComparatorOrder);
 
   /**
    * Gets the comparator order for URI:s. The lower comparator order the higher valued URI.
@@ -57,13 +55,13 @@ public class EduSignAssuranceLevels {
    */
   public static int getComparatorOrder(final String uri) {
     return switch (uri) {
-    case SWAMID_AL3 -> 0;
-    case REFEDS_HIGH -> 1;
-    case SWAMID_AL2 -> 2;
-    case REFEDS_MEDIUM -> 3;
-    case SWAMID_AL1 -> 4;
-    case REFEDS_LOW -> 5;
-    default -> Integer.MAX_VALUE;
+      case SWAMID_AL3 -> 0;
+      case REFEDS_HIGH -> 1;
+      case SWAMID_AL2 -> 2;
+      case REFEDS_MEDIUM -> 3;
+      case SWAMID_AL1 -> 4;
+      case REFEDS_LOW -> 5;
+      default -> Integer.MAX_VALUE;
     };
   }
 
