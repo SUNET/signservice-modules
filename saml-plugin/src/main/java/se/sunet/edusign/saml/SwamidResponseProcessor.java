@@ -1,9 +1,6 @@
 package se.sunet.edusign.saml;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-
+import lombok.extern.slf4j.Slf4j;
 import org.opensaml.saml.common.assertion.ValidationContext;
 import org.opensaml.saml.common.assertion.ValidationResult;
 import org.opensaml.saml.saml2.assertion.ConditionValidator;
@@ -21,13 +18,16 @@ import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.xmlsec.signature.support.SignaturePrevalidator;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
-
-import lombok.extern.slf4j.Slf4j;
 import se.swedenconnect.opensaml.saml2.assertion.validation.AssertionValidator;
 import se.swedenconnect.opensaml.saml2.assertion.validation.AuthnStatementValidator;
 import se.swedenconnect.opensaml.saml2.response.ResponseProcessingInput;
 import se.swedenconnect.opensaml.saml2.response.ResponseProcessorImpl;
 import se.swedenconnect.opensaml.saml2.response.validation.ResponseValidationException;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * A SAML response processor with fixes for the Swamid federation.
@@ -44,7 +44,7 @@ public class SwamidResponseProcessor extends ResponseProcessorImpl {
       final EntityDescriptor idpMetadata, final ValidationContext validationContext)
       throws ResponseValidationException {
 
-    validationContext.getDynamicParameters().put(RESPONSE_SIGNED_PARAMETER, Boolean.valueOf(response.isSigned()));
+    validationContext.getDynamicParameters().put(RESPONSE_SIGNED_PARAMETER, response.isSigned());
     super.validateResponse(response, relayState, input, idpMetadata, validationContext);
   }
 
@@ -57,8 +57,8 @@ public class SwamidResponseProcessor extends ResponseProcessorImpl {
 
     return new SwamidAssertionValidator(signatureTrustEngine, signatureProfileValidator,
         Arrays.asList(new BearerSubjectConfirmationValidator(), new HolderOfKeySubjectConfirmationValidator()),
-        Arrays.asList(new AudienceRestrictionConditionValidator()),
-        Arrays.asList(new AuthnStatementValidator()));
+        List.of(new AudienceRestrictionConditionValidator()),
+        List.of(new AuthnStatementValidator()));
   }
 
   /**
@@ -74,7 +74,7 @@ public class SwamidResponseProcessor extends ResponseProcessorImpl {
      * @param trustEngine the trust used to validate the object's signature
      * @param signaturePrevalidator the signature pre-validator used to pre-validate the object's signature
      * @param confirmationValidators validators used to validate {@link SubjectConfirmation} methods within the
-     *          assertion
+     *     assertion
      * @param conditionValidators validators used to validate the {@link Condition} elements within the assertion
      * @param statementValidators validators used to validate {@link Statement}s within the assertion
      */
@@ -97,7 +97,7 @@ public class SwamidResponseProcessor extends ResponseProcessorImpl {
           .orElse(false);
 
       final boolean assertionSignatureRequired = Optional.ofNullable(
-          context.getStaticParameters().get(SAML2AssertionValidationParameters.SIGNATURE_REQUIRED))
+              context.getStaticParameters().get(SAML2AssertionValidationParameters.SIGNATURE_REQUIRED))
           .map(Boolean.class::cast)
           .orElse(true);
 
@@ -119,7 +119,7 @@ public class SwamidResponseProcessor extends ResponseProcessorImpl {
           return ValidationResult.INVALID;
         }
       }
-      if (trustEngine == null) {
+      if (this.trustEngine == null) {
         log.warn("Signature validation was necessary, but no signature trust engine was available");
         context.getValidationFailureMessages().add(
             String.format("%s signature could not be evaluated due to internal error", this.getObjectName()));

@@ -1,23 +1,14 @@
 package se.sunet.edusign.saml;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.opensaml.saml.common.assertion.ValidationContext;
-import org.opensaml.saml.saml2.assertion.SAML2AssertionValidationParameters;
-import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
-import org.opensaml.saml.saml2.core.AuthnRequest;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.opensaml.saml.common.assertion.ValidationContext;
+import org.opensaml.saml.saml2.assertion.SAML2AssertionValidationParameters;
+import org.opensaml.saml.saml2.core.AuthnContext;
+import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
+import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import se.swedenconnect.opensaml.saml2.core.build.RequestedAuthnContextBuilder;
 import se.swedenconnect.opensaml.saml2.metadata.EntityDescriptorContainer;
 import se.swedenconnect.opensaml.saml2.metadata.provider.MetadataProvider;
@@ -38,6 +29,15 @@ import se.swedenconnect.signservice.core.attribute.saml.impl.StringSamlIdentityA
 import se.swedenconnect.signservice.core.http.HttpUserRequest;
 import se.swedenconnect.signservice.protocol.msg.AuthnRequirements;
 import se.swedenconnect.signservice.protocol.msg.SignMessage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Customizations of the SignService default SAML authentication handler to fit Swamid.
@@ -85,43 +85,45 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
    * </p>
    */
   @Override
-  protected AuthnRequestGeneratorContext createAuthnRequestContext(final AuthnRequirements authnRequirements,
-      final SignMessage signMessage, final SignServiceContext context, final EntityDescriptor idpMetadata)
-      throws UserAuthenticationException {
+  protected AuthnRequestGeneratorContext createAuthnRequestContext(@Nonnull final AuthnRequirements authnRequirements,
+      @Nullable final SignMessage signMessage, @Nonnull final SignServiceContext context,
+      @Nonnull final EntityDescriptor idpMetadata) {
 
     final boolean refedsMfaRequested;
     if (authnRequirements.getAuthnContextIdentifiers() != null
         && !authnRequirements.getAuthnContextIdentifiers().isEmpty()) {
-      context.put(REQUESTED_AUTHN_CONTEXT_KEY, String.join(",",
-          authnRequirements.getAuthnContextIdentifiers().stream()
-              .map(AuthnContextIdentifier::getIdentifier)
-              .collect(Collectors.toList())));
+      context.put(REQUESTED_AUTHN_CONTEXT_KEY, authnRequirements.getAuthnContextIdentifiers().stream()
+          .map(AuthnContextIdentifier::getIdentifier)
+          .collect(Collectors.joining(",")));
 
       refedsMfaRequested = authnRequirements.getAuthnContextIdentifiers().stream()
-          .filter(a -> Objects.equals(REFEDS_MFA_AUTHN_CONTEXT_URI, a.getIdentifier()))
-          .findFirst()
-          .isPresent();
+          .anyMatch(a -> Objects.equals(REFEDS_MFA_AUTHN_CONTEXT_URI, a.getIdentifier()));
     }
     else {
       refedsMfaRequested = false;
+      // Default to Password protected transport if no authn context was received ...
+      context.put(REQUESTED_AUTHN_CONTEXT_KEY, AuthnContext.PPT_AUTHN_CTX);
     }
 
     // We also handle the AL3 as a special case. If AL3 is requested as the only level to appear in the
     // eduPersonAssurance attribute, MFA is required, so we request that (even if not explicitly requested).
     //
-    final IdentityAttribute<?> eduPersonAssuranceRequirement = authnRequirements.getRequestedSignerAttributes().stream()
-        .filter(a -> Objects.equals(EDU_PERSON_ASSURANCE_NAME, a.getIdentifier()))
-        .findFirst()
-        .orElse(null);
+    if (!refedsMfaRequested) {
+      final IdentityAttribute<?> eduPersonAssuranceRequirement =
+          authnRequirements.getRequestedSignerAttributes().stream()
+              .filter(a -> Objects.equals(EDU_PERSON_ASSURANCE_NAME, a.getIdentifier()))
+              .findFirst()
+              .orElse(null);
 
-    final boolean al3Requested = eduPersonAssuranceRequirement != null
-        && eduPersonAssuranceRequirement.getValues().size() == 1
-        && Objects.equals(EduSignAssuranceLevels.SWAMID_AL3, eduPersonAssuranceRequirement.getValue());
+      final boolean al3Requested = eduPersonAssuranceRequirement != null
+          && eduPersonAssuranceRequirement.getValues().size() == 1
+          && Objects.equals(EduSignAssuranceLevels.SWAMID_AL3, eduPersonAssuranceRequirement.getValue());
 
-    if (!refedsMfaRequested && al3Requested) {
-      context.put(REQUESTED_AUTHN_CONTEXT_KEY, REFEDS_MFA_AUTHN_CONTEXT_URI);
-      log.info("{} was requested, but not {} - adding {} to AuthnRequest as requested authn context",
-          EduSignAssuranceLevels.SWAMID_AL3, REFEDS_MFA_AUTHN_CONTEXT_URI, REFEDS_MFA_AUTHN_CONTEXT_URI);
+      if (al3Requested) {
+        context.put(REQUESTED_AUTHN_CONTEXT_KEY, REFEDS_MFA_AUTHN_CONTEXT_URI);
+        log.info("{} was requested, but not {} - adding {} to AuthnRequest as requested authn context",
+            EduSignAssuranceLevels.SWAMID_AL3, REFEDS_MFA_AUTHN_CONTEXT_URI, REFEDS_MFA_AUTHN_CONTEXT_URI);
+      }
     }
 
     return new AuthnRequestGeneratorContext() {
@@ -136,15 +138,16 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
       @Nullable
       public RequestedAuthnContextBuilderFunction getRequestedAuthnContextBuilderFunction() {
         return (list, hok) -> {
-          if (refedsMfaRequested || al3Requested) {
-            return RequestedAuthnContextBuilder.builder()
-                .comparison(AuthnContextComparisonTypeEnumeration.EXACT)
-                .authnContextClassRefs(REFEDS_MFA_AUTHN_CONTEXT_URI)
-                .build();
-          }
-          else {
-            return null;
-          }
+
+          final List<String> requestedContexts =
+              Optional.ofNullable(context.get(REQUESTED_AUTHN_CONTEXT_KEY, String.class))
+                  .map(s -> Arrays.asList(s.split(",", -1)))
+                  .orElseGet(Collections::emptyList);
+
+          return RequestedAuthnContextBuilder.builder()
+              .comparison(AuthnContextComparisonTypeEnumeration.EXACT)
+              .authnContextClassRefs(requestedContexts)
+              .build();
         };
       }
     };
@@ -154,9 +157,9 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
    * Implements special handling of eduPersonAssurance ...
    */
   @Override
-  protected void assertAttributes(final AuthnRequirements authnRequirements,
-      final List<IdentityAttribute<?>> issuedAttributes,
-      final SignServiceContext context) throws UserAuthenticationException {
+  protected void assertAttributes(@Nonnull final AuthnRequirements authnRequirements,
+      @Nonnull final List<IdentityAttribute<?>> issuedAttributes,
+      @Nonnull final SignServiceContext context) throws UserAuthenticationException {
 
     final IdentityAttribute<?> eduPersonAssuranceReq = authnRequirements.getRequestedSignerAttributes().stream()
         .filter(a -> EDU_PERSON_ASSURANCE_NAME.equals(a.getIdentifier()))
@@ -164,7 +167,7 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
         .orElse(null);
     if (eduPersonAssuranceReq != null) {
 
-      // If the attribute is multi-valued, sort it so that the highest level is placed first.
+      // If the attribute is multivalued, sort it so that the highest level is placed first.
       //
       final List<String> requestedAssuranceLevels = eduPersonAssuranceReq.getValues().stream()
           .map(String.class::cast)
@@ -179,7 +182,7 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
 
         final List<String> matchedRequiredLevels = new ArrayList<>();
         for (final String level : requestedAssuranceLevels) {
-          if (eduPersonAssurance.getValues().stream().filter(v -> Objects.equals(v, level)).findAny().isPresent()) {
+          if (eduPersonAssurance.getValues().stream().anyMatch(v -> Objects.equals(v, level))) {
             matchedRequiredLevels.add(level);
           }
         }
@@ -199,21 +202,21 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
     }
 
     super.assertAttributes(authnRequirements, issuedAttributes, context);
-
   }
 
   /**
    * Overrides the default implementation with custom checking of requested AuthnContext.
    */
   @Override
-  protected void assertAuthnContext(final AuthnRequest authnRequest, final String authnContextClassUri,
-      final SignServiceContext context) throws UserAuthenticationException {
+  protected void assertAuthnContext(@Nonnull final AuthnRequest authnRequest,
+      @Nullable final String authnContextClassUri, @Nonnull final SignServiceContext context)
+      throws UserAuthenticationException {
 
     // Fetch the saved AuthnContext(s) read from the sign request.
     //
     final List<String> requestedContexts = Optional.ofNullable(context.get(REQUESTED_AUTHN_CONTEXT_KEY, String.class))
         .map(s -> Arrays.asList(s.split(",", -1)))
-        .orElseGet(() -> Collections.emptyList());
+        .orElseGet(Collections::emptyList);
     if (requestedContexts.isEmpty()) {
       return;
     }
@@ -223,6 +226,17 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
       throw new UserAuthenticationException(AuthenticationErrorCode.UNSUPPORTED_AUTHNCONTEXT, msg);
     }
     if (!requestedContexts.contains(authnContextClassUri)) {
+
+      // Allow MFA even though it was not requested. Some IdP:s misbehave ...
+      //
+      if (REFEDS_MFA_AUTHN_CONTEXT_URI.equals(authnContextClassUri)) {
+        final String msg = String.format(
+            "Received authn context class '%s', but this was not requested (%s) - allowing anyway ...",
+            authnContextClassUri, requestedContexts);
+        log.info("{}: {}", context.getId(), msg);
+        return;
+      }
+
       final String msg = String.format("The received authn context class '%s' was not among the requested %s",
           authnContextClassUri, requestedContexts);
       log.info("{}: {}", context.getId(), msg);
@@ -234,6 +248,7 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
    * Applies special processing for eduSign.
    */
   @Override
+  @Nonnull
   protected IdentityAssertion buildIdentityAssertion(@Nonnull final ResponseProcessingResult result,
       @Nonnull final List<IdentityAttribute<?>> attributes, @Nonnull final SignServiceContext context)
       throws UserAuthenticationException {
@@ -251,7 +266,7 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
     //
     final List<String> matchedLevels =
         Optional.ofNullable(context.get(MATCHED_EDU_PERSON_ASSURANCE_LEVELS_CONTEXT_KEY, String[].class))
-            .map(arr -> new ArrayList<String>(List.of(arr)))
+            .map(arr -> new ArrayList<>(List.of(arr)))
             .orElseGet(() -> new ArrayList<>(0));
 
     context.remove(MATCHED_EDU_PERSON_ASSURANCE_LEVELS_CONTEXT_KEY);
@@ -293,13 +308,12 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
     if (eduPersonAssurance != null) {
 
       if (!matchedLevels.isEmpty()) {
-        sortedEduPersonAssuranceValues = new ArrayList<>();
-        sortedEduPersonAssuranceValues.addAll(matchedLevels);
+        sortedEduPersonAssuranceValues = new ArrayList<>(matchedLevels);
 
         eduPersonAssurance.getValues().stream()
             .filter(v -> !matchedLevels.contains(v))
             .map(String.class::cast)
-            .forEach(v -> sortedEduPersonAssuranceValues.add(v));
+            .forEach(sortedEduPersonAssuranceValues::add);
       }
       else {
         sortedEduPersonAssuranceValues = eduPersonAssurance.getValues().stream()
@@ -381,7 +395,7 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
 
   /** {@inheritDoc} */
   @Override
-  protected void resetContext(final SignServiceContext context) {
+  protected void resetContext(@Nonnull final SignServiceContext context) {
     super.resetContext(context);
     context.remove(REQUESTED_AUTHN_CONTEXT_KEY);
     context.remove(MATCHED_EDU_PERSON_ASSURANCE_LEVELS_CONTEXT_KEY);
@@ -392,7 +406,7 @@ public class SwamidSamlAuthenticationHandler extends AbstractSamlAuthenticationH
    */
   @Override
   protected ValidationContext createValidationContext(
-      final HttpUserRequest httpRequest, final SignServiceContext context) {
+      @Nonnull final HttpUserRequest httpRequest, @Nonnull final SignServiceContext context) {
     return new ValidationContext(Map.of(SAML2AssertionValidationParameters.SIGNATURE_REQUIRED, Boolean.FALSE));
   }
 

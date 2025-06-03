@@ -1,34 +1,36 @@
 package se.sunet.edusign.harica.commons.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.cert.X509Certificate;
-import java.util.List;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-
-import lombok.extern.slf4j.Slf4j;
+import se.sunet.edusign.harica.commons.SerializableCredentials;
 import se.swedenconnect.security.credential.KeyStoreCredential;
 import se.swedenconnect.security.credential.PkiCredential;
 import se.swedenconnect.security.credential.container.InMemoryPkiCredentialContainer;
 import se.swedenconnect.security.credential.container.PkiCredentialContainer;
 import se.swedenconnect.security.credential.container.keytype.KeyGenType;
-import se.sunet.edusign.harica.commons.SerializableCredentials;
+import se.swedenconnect.security.credential.factory.KeyStoreBuilder;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.cert.X509Certificate;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test for
@@ -52,9 +54,14 @@ class PKCS8SerializableCredentialsTest {
     ecCredential = credentialContainer.getCredential(credentialContainer.generateCredential(KeyGenType.EC_P256));
     rsaCredential = credentialContainer.getCredential(credentialContainer.generateCredential(KeyGenType.RSA_3072));
 
-    Resource jksResource = new FileSystemResource(PKCS8SerializableCredentialsTest.class.getClassLoader().getResource("testKeys.jks").getFile());
-    ecJksCredential = new KeyStoreCredential(jksResource, "Test1234".toCharArray(), "ec", "Test1234".toCharArray());
-    rsaJksCredential = new KeyStoreCredential(jksResource, "Test1234".toCharArray(), "rsa", "Test1234".toCharArray());
+    final KeyStore keyStore = KeyStoreBuilder.builder()
+        .location("classpath:testKeys.jks")
+        .password("Test1234")
+        .type("JKS")
+        .build();
+
+    ecJksCredential = new KeyStoreCredential(keyStore, "ec", "Test1234".toCharArray());
+    rsaJksCredential = new KeyStoreCredential(keyStore, "rsa", "Test1234".toCharArray());
   }
 
   @BeforeEach
@@ -64,26 +71,26 @@ class PKCS8SerializableCredentialsTest {
   @Test
   void getPrivateAndPublicKey() throws Exception {
     log.info("Testing EC key serialization");
-    getAndTestKeys(ecCredential.getPrivateKey(), ecCredential.getPublicKey());
+    this.getAndTestKeys(ecCredential.getPrivateKey(), ecCredential.getPublicKey());
     log.info("Testing RSA key serialization");
-    getAndTestKeys(rsaCredential.getPrivateKey(), rsaCredential.getPublicKey());
+    this.getAndTestKeys(rsaCredential.getPrivateKey(), rsaCredential.getPublicKey());
   }
 
-  void getAndTestKeys(PrivateKey privateKey, PublicKey publicKey) throws Exception {
+  void getAndTestKeys(final PrivateKey privateKey, final PublicKey publicKey) throws Exception {
 
-    SerializableCredentials sc = new PKCS8SerializableCredentials(privateKey, publicKey);
-    PrivateKey recoveredPrivate = sc.getPrivateKey();
+    final SerializableCredentials sc = new PKCS8SerializableCredentials(privateKey, publicKey);
+    final PrivateKey recoveredPrivate = sc.getPrivateKey();
     assertEquals(privateKey, recoveredPrivate);
 
-    PublicKey recoveredPublic = sc.getPublicKey();
+    final PublicKey recoveredPublic = sc.getPublicKey();
     assertEquals(publicKey, recoveredPublic);
 
     log.info("Successfully parsed recovered keys");
 
-    String pkcs8Private = (String) FieldUtils.readField(sc, "privateKey", true);
+    final String pkcs8Private = (String) FieldUtils.readField(sc, "privateKey", true);
     log.info("Private key:\n{}", pkcs8Private);
 
-    String pkcs8Public = (String) FieldUtils.readField(sc, "publicKey", true);
+    final String pkcs8Public = (String) FieldUtils.readField(sc, "publicKey", true);
     log.info("Public key:\n{}", pkcs8Public);
 
   }
@@ -92,19 +99,19 @@ class PKCS8SerializableCredentialsTest {
   void getCertificates() {
 
     log.info("Get EC certificates from credential added after construction");
-    testGetCertificates(ecJksCredential, true);
+    this.testGetCertificates(ecJksCredential, true);
     log.info("Get EC certificates from credential set at construction");
-    testGetCertificates(ecJksCredential, false);
+    this.testGetCertificates(ecJksCredential, false);
     log.info("Get RSA certificates from credential added after construction");
-    testGetCertificates(rsaJksCredential, true);
+    this.testGetCertificates(rsaJksCredential, true);
     log.info("Get RSA certificates from credential set at construction");
-    testGetCertificates(rsaJksCredential, false);
+    this.testGetCertificates(rsaJksCredential, false);
   }
 
-  void testGetCertificates(PkiCredential credential, boolean postAdd) {
+  void testGetCertificates(final PkiCredential credential, final boolean postAdd) {
 
-    List<X509Certificate> chain = credential.getCertificateChain();
-    X509Certificate certificate = credential.getCertificate();
+    final List<X509Certificate> chain = credential.getCertificateChain();
+    final X509Certificate certificate = credential.getCertificate();
 
     SerializableCredentials sc;
     if (!postAdd) {
@@ -113,7 +120,7 @@ class PKCS8SerializableCredentialsTest {
     sc = new PKCS8SerializableCredentials(credential.getPrivateKey(), credential.getPublicKey());
     sc.setCertificateChain(credential.getCertificateChain());
 
-    List<X509Certificate> recoveredChain = sc.getCertificateChain();
+    final List<X509Certificate> recoveredChain = sc.getCertificateChain();
     assertNotNull(recoveredChain);
     log.info("Recovered chain is not null");
     assertEquals(chain.size(), recoveredChain.size());
@@ -129,11 +136,12 @@ class PKCS8SerializableCredentialsTest {
   }
 
   @Test
-  void destroy() throws Exception {
+  void destroy() {
 
     log.info("Testing destroy function");
 
-    SerializableCredentials sc = new PKCS8SerializableCredentials(ecJksCredential.getPrivateKey(), ecJksCredential.getPublicKey());
+    final SerializableCredentials sc =
+        new PKCS8SerializableCredentials(ecJksCredential.getPrivateKey(), ecJksCredential.getPublicKey());
     sc.setCertificateChain(ecJksCredential.getCertificateChain());
 
     assertNotNull(sc.getPrivateKey());
@@ -153,26 +161,27 @@ class PKCS8SerializableCredentialsTest {
 
   @Test
   void testSerialization() {
-    SerializableCredentials sc = new PKCS8SerializableCredentials(ecJksCredential.getPrivateKey(), ecJksCredential.getPublicKey());
+    final SerializableCredentials sc =
+        new PKCS8SerializableCredentials(ecJksCredential.getPrivateKey(), ecJksCredential.getPublicKey());
     sc.setCertificateChain(ecJksCredential.getCertificateChain());
 
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+    final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    try (final ObjectOutputStream oos = new ObjectOutputStream(bos)) {
       oos.writeObject(sc);
       oos.flush();
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       throw new RuntimeException(e);
     }
-    byte[] serializedCredentials = bos.toByteArray();
+    final byte[] serializedCredentials = bos.toByteArray();
     log.info("Serialized credentials: \n{}", Hex.toHexString(serializedCredentials));
 
-    SerializableCredentials recSc;
-    ByteArrayInputStream bis = new ByteArrayInputStream(serializedCredentials);
-    try(ObjectInputStream ois = new ObjectInputStream(bis)) {
+    final SerializableCredentials recSc;
+    final ByteArrayInputStream bis = new ByteArrayInputStream(serializedCredentials);
+    try (final ObjectInputStream ois = new ObjectInputStream(bis)) {
       recSc = (PKCS8SerializableCredentials) ois.readObject();
     }
-    catch (IOException | ClassNotFoundException e) {
+    catch (final IOException | ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
 

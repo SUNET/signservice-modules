@@ -15,27 +15,17 @@
  */
 package se.sunet.edusign.harica.authn.config;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.core.io.ClassPathResource;
-
-import se.swedenconnect.security.credential.factory.KeyStoreFactoryBean;
 import se.swedenconnect.signservice.authn.AuthenticationHandler;
 import se.swedenconnect.signservice.core.config.AbstractHandlerConfiguration;
 import se.swedenconnect.signservice.core.config.HandlerConfiguration;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Test cases for SamlAuthenticationHandlerFactory.
  */
 public class HaricaCAAuthenticationFactoryTest {
-
-  public HaricaCAAuthenticationFactoryTest() throws Exception {
-    final KeyStoreFactoryBean factory = new KeyStoreFactoryBean(
-      new ClassPathResource("keys.jks"), "secret".toCharArray());
-    factory.afterPropertiesSet();
-    factory.getObject();
-  }
 
   @Test
   public void testMissingConfig() {
@@ -43,7 +33,7 @@ public class HaricaCAAuthenticationFactoryTest {
     assertThatThrownBy(() -> {
       factory.create(null);
     }).isInstanceOf(NullPointerException.class)
-      .hasMessage("Missing configuration for creating AuthenticationHandler instances");
+        .hasMessage("Missing configuration for creating AuthenticationHandler instances");
   }
 
   @Test
@@ -59,9 +49,8 @@ public class HaricaCAAuthenticationFactoryTest {
     assertThatThrownBy(() -> {
       factory.create(conf);
     }).isInstanceOf(IllegalArgumentException.class)
-      .hasMessageContaining("Unknown configuration object supplied - ");
+        .hasMessageContaining("Unknown configuration object supplied - ");
   }
-
 
   @SuppressWarnings("unused")
   private static class HaricaCAAuthenticationFactory2 extends HaricaCAAuthenticationFactory {
